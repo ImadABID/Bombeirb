@@ -141,7 +141,7 @@ void map_display(struct map* map)
 	      window_display_image(sprite_get_box(), x, y);
 	      break;
 			case CELL_BOMB:
-				bomb_tick(x,y);
+			//	bomb_tick(x,y);
 				window_display_image(sprite_get_bomb(), x, y);
 				break;
 	    case CELL_BONUS:
@@ -192,7 +192,7 @@ struct map* map_get(char *map_name){
     char *rest = malloc(10); fscanf(f,"%s",rest);
     int height=atoi(++rest);
 	free(--rest);
-	
+
 	struct map* map = map_new(width, height);
 
 	for(int i=0;i<width*height;i++){
