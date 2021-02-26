@@ -67,6 +67,7 @@ SDL_Surface* door_opened;
 SDL_Surface* door_closed;
 SDL_Surface* stone;
 SDL_Surface* tree;
+SDL_Surface* bomb;
 
 // bonus
 #define NB_BONUS 4
@@ -114,6 +115,7 @@ static void map_load() {
 	box = image_load(MAP_CASE);
 	key = image_load(MAP_KEY);
 	stone = image_load(MAP_STONE);
+	bomb = image_load(BOMB_TTL1);
 	door_opened = image_load(MAP_DOOR_OPENED);
 	door_closed = image_load(MAP_DOOR_CLOSED);
 }
@@ -211,6 +213,11 @@ SDL_Surface* sprite_get_tree() {
 SDL_Surface* sprite_get_box() {
 	assert(box);
 	return box;
+}
+
+SDL_Surface* sprite_get_bomb() {
+	assert(bomb);
+	return bomb;
 }
 
 SDL_Surface* sprite_get_key() {
