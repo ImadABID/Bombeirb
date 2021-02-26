@@ -3,6 +3,10 @@
 Réalisation d'un jeu vidéo 2D : **bombeirb**.
 
 
+## To do
+
++ la fenêtre doit s'adapter aux dimensions de la map.
+
 ## Organisation
 
 Le travail est à réaliser en équipe de un à deux étudiants appartenant au même groupe (A, B ou C). Vous devez au préalable former les équipes et les nommer de la forme *GA-2018-T1* pour l'equipe *1* du groupe *A*. 
