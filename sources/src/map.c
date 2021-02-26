@@ -50,7 +50,7 @@ struct map* map_new(int width, int height)
 int map_is_inside(struct map* map, int x, int y)
 {
 	assert(map);
-	return 1;
+	return x >= 0 && y >= 0 && x < map_get_width(map) && y < map_get_height(map);
 }
 
 void map_free(struct map *map)
@@ -132,7 +132,7 @@ void map_display(struct map* map)
 	    y = j * SIZE_BLOC;
 
 	    unsigned char type = map->grid[CELL(i,j)];
-	    
+
 	    switch (type & 0xf0) {
 		case CELL_SCENERY:
 		  display_scenery(map, x, y, type);
