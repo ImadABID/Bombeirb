@@ -15,6 +15,7 @@ void		 sprite_load();
 SDL_Surface* sprite_get_player(enum direction direction);
 SDL_Surface* sprite_get_bonus(enum bonus_type bonus_type);
 SDL_Surface* sprite_get_tree();
+SDL_Surface* sprite_get_princess();
 SDL_Surface* sprite_get_box();
 SDL_Surface* sprite_get_bomb();
 SDL_Surface* sprite_get_key();
