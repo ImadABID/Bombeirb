@@ -81,7 +81,7 @@ void game_banner_display(struct game* game) {
 	window_display_image(sprite_get_banner_range(), x, y);
 
 	x = 3 * white_bloc + 5 * SIZE_BLOC;
-	window_display_image(sprite_get_number(5), x, y);
+	window_display_image(sprite_get_number(3), x, y);
 }
 
 void game_display(struct game* game) {
@@ -126,6 +126,7 @@ static short input_keyboard(struct game* game) {
 				player_move(player, map);
 				break;
 			case SDLK_SPACE:
+				bomb_place(player, map);
 				break;
 			default:
 				break;

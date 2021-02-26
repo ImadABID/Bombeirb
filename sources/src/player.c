@@ -15,6 +15,8 @@ struct player {
 	int x, y;
 	enum direction direction;
 	int bombs;
+	int life;
+	int range;
 };
 
 struct player* player_init(int bombs) {
@@ -24,6 +26,8 @@ struct player* player_init(int bombs) {
 
 	player->direction = NORTH;
 	player->bombs = bombs;
+	player->life = 10;
+	player->range = 1;
 
 	return player;
 }
@@ -78,11 +82,45 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 
 	switch (map_get_cell_type(map, x, y)) {
 	case CELL_SCENERY:
-		return 1;
+		return 0;
 		break;
 
 	case CELL_BOX:
-		return 1;
+		//Est ce qu'on peut bouger la caisse ?
+		switch (player->direction) {
+				case NORTH:
+					if (map_is_inside(map, x, y - 1) && map_get_cell_type(map, x, y - 1) == CELL_EMPTY) {
+						map_set_cell_type(map, x, y - 1, CELL_BOX);
+						map_set_cell_type(map, x, y, CELL_EMPTY);
+						return 1;
+					}
+					break;
+
+				case SOUTH:
+				if (map_is_inside(map, x, y + 1) && map_get_cell_type(map, x, y + 1) == CELL_EMPTY) {
+					map_set_cell_type(map, x, y + 1, CELL_BOX);
+					map_set_cell_type(map, x, y, CELL_EMPTY);
+					return 1;
+				}
+					break;
+
+				case WEST:
+				if (map_is_inside(map, x - 1, y) && map_get_cell_type(map, x - 1, y) == CELL_EMPTY) {
+					map_set_cell_type(map, x - 1, y, CELL_BOX);
+					map_set_cell_type(map, x, y, CELL_EMPTY);
+					return 1;
+				}
+					break;
+
+				case EAST:
+				if (map_is_inside(map, x + 1, y) && map_get_cell_type(map, x + 1,y) == CELL_EMPTY) {
+					map_set_cell_type(map, x + 1, y, CELL_BOX);
+					map_set_cell_type(map, x, y, CELL_EMPTY);
+					return 1;
+				}
+					break;
+				}
+		return 0;
 		break;
 
 	case CELL_BONUS:
@@ -135,7 +173,8 @@ int player_move(struct player* player, struct map* map) {
 	}
 
 	if (move) {
-		map_set_cell_type(map, x, y, CELL_EMPTY);
+		//bon bah on bouge la
+		//map_set_cell_type(map, x, y, CELL_EMPTY);
 	}
 	return move;
 }
@@ -145,4 +184,3 @@ void player_display(struct player* player) {
 	window_display_image(sprite_get_player(player->direction),
 			player->x * SIZE_BLOC, player->y * SIZE_BLOC);
 }
-
