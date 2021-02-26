@@ -179,3 +179,26 @@ struct map* map_get_static(void)
 
 	return map;
 }
+
+struct map* map_get(char *map_name){
+
+	FILE *f = fopen(map_name,"r");
+
+	int width; fscanf(f,"%d",&width);
+    char *rest = malloc(10); fscanf(f,"%s",rest);
+    int height=atoi(++rest);
+	free(--rest);
+	
+	struct map* map = map_new(width, height);
+
+	for(int i=0;i<width*height;i++){
+			char *str_info=malloc(3);
+			fscanf(f,"%s",str_info);
+			map->grid[i]=(char)atoi(str_info);
+			free(str_info);
+	}
+
+    fclose(f);
+	
+	return map;
+}

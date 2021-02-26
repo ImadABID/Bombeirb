@@ -23,7 +23,8 @@ game_new(void) {
 
 	struct game* game = malloc(sizeof(*game));
 	game->maps = malloc(sizeof(struct game));
-	game->maps[0] = map_get_static();
+	//game->maps[0] = map_get_static();
+	game->maps[0] = map_get("map/map_0");
 	game->levels = 1;
 	game->level = 0;
 

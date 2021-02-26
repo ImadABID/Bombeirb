@@ -6,7 +6,7 @@
 #define MAP_H_
 
 enum cell_type {
-	CELL_EMPTY=0x00,   		//  0000 0000
+	CELL_EMPTY=0x00,   		//  0000 0000 //1 octé
 	CELL_SCENERY=0x10, 		//  0001 0000
 	CELL_BOX=0x20,   		//  0010 0000
 	CELL_DOOR=0x30,      	//  0011 0000
@@ -67,6 +67,7 @@ int map_is_inside(struct map* map, int x, int y);
 
 // Return a default static map
 struct map* map_get_static();
+struct map* map_get(char *map_name);
 
 // Display the map on the screen
 void map_display(struct map* map);
