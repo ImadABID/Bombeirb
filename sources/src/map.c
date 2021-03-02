@@ -189,11 +189,24 @@ struct map* map_get_static(void)
 	return map;
 }
 
-struct map* map_get(char *map_name){
-	FILE *f = fopen(map_name,"r");
+struct map* map_get(char *map_prefix, int level){
+
+	char *map_path = malloc(10*sizeof(char));
+	map_path = strcpy(map_path,"map/");
+	char *level_str = malloc(10*sizeof(char));
+	sprintf(level_str,"%d",level);
+	map_path = strcat(map_path,map_prefix);
+	map_path = strcat(map_path,"_");
+	map_path = strcat(map_path,level_str);
+	free(level_str);
+
+	FILE *f = fopen(map_path,"r");
 	if(f==NULL){
-		printf("Error : %s not founded\n",map_name);
+		fprintf(stderr,"Error : %s not founded\n",map_path);
+		free(map_path);
+		exit(EXIT_FAILURE);
 	}
+	free(map_path);
 
 	int width, height;
 	char *rest = malloc(10*sizeof(char));

@@ -44,18 +44,12 @@ game_new(void) {
 	free(data_int);
 	free(second_line);
 
-	char *map_path = malloc(10*sizeof(char));
-	map_path = strcpy(map_path,"map/");
-	char *level_str = malloc(10*sizeof(char));
-	sprintf(level_str,"%d",level);
-	map_path = strcat(map_path,map_prefix);
-	map_path = strcat(map_path,"_");
-	map_path = strcat(map_path,level_str);
-	free(level_str);
+	game->maps = malloc(nbr_levels*sizeof(struct map*));
+	for(int i=0; i<nbr_levels; i++){
+		game->maps[i] = map_get(map_prefix, i);
+	}
+	free(map_prefix);
 
-	game->maps = malloc(sizeof(struct map*));
-	game->maps[0] = map_get(map_path);	//game->maps[0] = map_get_static();
-	free(map_path);
 	game->levels = nbr_levels;				//game->levels = 1;
 	game->level = level;					//game->level = 0;
 
