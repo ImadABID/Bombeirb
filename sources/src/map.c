@@ -14,6 +14,8 @@
 #include <sprite.h>
 #include <window.h>
 
+#include "str_formating.h"
+
 struct map {
 	int width;
 	int height;
@@ -191,10 +193,14 @@ struct map* map_get(char *map_name){
 
 	FILE *f = fopen(map_name,"r");
 
-	int width; fscanf(f,"%d",&width);
-    char *rest = malloc(10); fscanf(f,"%s",rest);
-    int height=atoi(++rest);
-	free(--rest);
+	int width, height;
+	char *rest = malloc(10);
+	fscanf(f,"%s",rest);
+	int *dim = str_format_to_int(2, rest);
+	width = dim[0];
+	height = dim[1];
+	free(dim);
+
 
 	struct map* map = map_new(width, height);
 
