@@ -190,11 +190,13 @@ struct map* map_get_static(void)
 }
 
 struct map* map_get(char *map_name){
-
 	FILE *f = fopen(map_name,"r");
+	if(f==NULL){
+		printf("Error : %s not founded\n",map_name);
+	}
 
 	int width, height;
-	char *rest = malloc(10);
+	char *rest = malloc(10*sizeof(char));
 	fscanf(f,"%s",rest);
 	int *dim = str_format_to_int(2, rest);
 	width = dim[0];

@@ -3,6 +3,8 @@
  * Copyright (C) 2018 by Laurent Réveillère
  ******************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include <time.h>
 
@@ -10,6 +12,8 @@
 #include <misc.h>
 #include <window.h>
 #include <sprite.h>
+
+#include "str_formating.h"
 
 struct game {
 	struct map** maps;       // the game's map
@@ -23,38 +27,41 @@ game_new(void) {
 	sprite_load(); // load sprites into process memory
 
 	struct game* game = malloc(sizeof(*game));
-	game->maps = malloc(sizeof(struct game));
-	/*
-	int first_num;
-	char *second_line = malloc(10*sizeof(char));
-	int map_num,p_x,p_y;
-	char *map_prefix = malloc(10*sizeof(char));
 
-	//game->maps[0] = map_get_static();
-	File *fpartie= fopen("data/partie","r");
-		fscanf(fpartie,"%d",&first_num);
+	int nbr_levels, level, x, y;
+	char *second_line = malloc(10 * sizeof(char));
+	char *map_prefix = malloc(10 * sizeof(char));
+	FILE *fpartie= fopen("data/partie","r");
+		fscanf(fpartie,"%d",&nbr_levels);
 		fscanf(fpartie,"%s",second_line);
 		fscanf(fpartie,"%s",map_prefix);
 	fclose(fpartie);
 
-	char *map_num_str = malloc(10*sizeof(char));
-	char *map_num_str = malloc(10*sizeof(char));
-	int i=0;
-	while (){
-	}
-	
-	//sprintf(,"%d",);
-
+	int *data_int = str_format_to_int(3, second_line);
+	level = data_int[0];
+	x = data_int[1];
+	y = data_int[2];
+	free(data_int);
 	free(second_line);
-	free(map_prefix);
-	*/
-	game->maps[0] = map_get("map/map_0");
-	game->levels = 1;
-	game->level = 0;
+
+	char *map_path = malloc(10*sizeof(char));
+	map_path = strcpy(map_path,"map/");
+	char *level_str = malloc(10*sizeof(char));
+	sprintf(level_str,"%d",level);
+	map_path = strcat(map_path,map_prefix);
+	map_path = strcat(map_path,"_");
+	map_path = strcat(map_path,level_str);
+	free(level_str);
+
+	game->maps = malloc(sizeof(struct map*));
+	game->maps[0] = map_get(map_path);	//game->maps[0] = map_get_static();
+	free(map_path);
+	game->levels = nbr_levels;				//game->levels = 1;
+	game->level = level;					//game->level = 0;
 
 	game->player = player_init(3);
 	// Set default location of the player
-	player_set_position(game->player, 1, 0);
+	player_set_position(game->player, x, y);
 
 	return game;
 }
