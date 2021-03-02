@@ -127,7 +127,7 @@ static short input_keyboard(struct game* game) {
 				player_move(player, map);
 				break;
 			case SDLK_SPACE:
-				//bomb_place(player, map);
+				bomb_place(player, map);
 				break;
 			default:
 				break;
