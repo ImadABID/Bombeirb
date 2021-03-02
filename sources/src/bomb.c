@@ -1,6 +1,7 @@
 #include <map.h>
 #include <player.h>
 #include <window.h>
+#include <constant.h>
 
 int bomb_place(struct player* player, struct map* map){
   //La on pose une bombe
@@ -9,5 +10,10 @@ int bomb_place(struct player* player, struct map* map){
 }
 
 int bomb_tick(int x, int y){
-  return SDL_GetTicks();
+  return 3 - (SDL_GetTicks()/500)%4;
+}
+
+int bomb_explode(){
+
+  return 0;
 }

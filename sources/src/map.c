@@ -13,6 +13,7 @@
 #include <misc.h>
 #include <sprite.h>
 #include <window.h>
+#include <bomb.h>
 
 #include "str_formating.h"
 
@@ -146,8 +147,7 @@ void map_display(struct map* map)
 	      window_display_image(sprite_get_box(), x, y);
 	      break;
 			case CELL_BOMB:
-			//	bomb_tick(x,y);
-				window_display_image(sprite_get_bomb(), x, y);
+				window_display_image(sprite_get_bomb(bomb_tick(x,y)), x, y);
 				break;
 	    case CELL_BONUS:
 	      display_bonus(map, x, y, type);
@@ -227,6 +227,6 @@ struct map* map_get(char *map_prefix, int level){
 	}
 
     fclose(f);
-	
+
 	return map;
 }

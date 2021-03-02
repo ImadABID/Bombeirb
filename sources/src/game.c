@@ -12,6 +12,7 @@
 #include <misc.h>
 #include <window.h>
 #include <sprite.h>
+#include <bomb.h>
 
 #include "str_formating.h"
 
