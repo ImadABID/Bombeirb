@@ -2,6 +2,7 @@
  * This file is part of Bombeirb.
  * Copyright (C) 2018 by Laurent Réveillère
  ******************************************************************************/
+#include <stdio.h>
 #include <assert.h>
 #include <time.h>
 
@@ -23,7 +24,30 @@ game_new(void) {
 
 	struct game* game = malloc(sizeof(*game));
 	game->maps = malloc(sizeof(struct game));
+	/*
+	int first_num;
+	char *second_line = malloc(10*sizeof(char));
+	int map_num,p_x,p_y;
+	char *map_prefix = malloc(10*sizeof(char));
+
 	//game->maps[0] = map_get_static();
+	File *fpartie= fopen("data/partie","r");
+		fscanf(fpartie,"%d",&first_num);
+		fscanf(fpartie,"%s",second_line);
+		fscanf(fpartie,"%s",map_prefix);
+	fclose(fpartie);
+
+	char *map_num_str = malloc(10*sizeof(char));
+	char *map_num_str = malloc(10*sizeof(char));
+	int i=0;
+	while (){
+	}
+	
+	//sprintf(,"%d",);
+
+	free(second_line);
+	free(map_prefix);
+	*/
 	game->maps[0] = map_get("map/map_0");
 	game->levels = 1;
 	game->level = 0;
