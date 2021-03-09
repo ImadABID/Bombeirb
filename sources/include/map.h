@@ -33,6 +33,12 @@ enum scenery_type {
 	SCENERY_PRINCESS = 4  // 0100
 };
 
+enum door_type {
+	DOOR_CLOSED			= 0,	// 0000
+	DOOR_OPENED_NEXT	= 1,	// 0001
+	DOOR_OPENED_PREV	= 2		// 0010
+};
+
 enum compose_type {
 	CELL_TREE     = CELL_SCENERY | SCENERY_TREE,
 	CELL_STONE    = CELL_SCENERY | SCENERY_STONE,
@@ -57,6 +63,8 @@ void map_free(struct map* map);
 // Return the height and width of a map
 int map_get_width(struct map* map);
 int map_get_height(struct map* map);
+
+enum cell_type map_get_cell(struct map* map, int x, int y);
 
 // Return the type of a cell
 enum cell_type map_get_cell_type(struct map* map, int x, int y);
