@@ -76,6 +76,10 @@ int map_get_height(struct map* map)
 	return map->height;
 }
 
+enum cell_type map_get_cell(struct map* map, int x, int y){
+	return map->grid[CELL(x,y)];
+}
+
 enum cell_type map_get_cell_type(struct map* map, int x, int y)
 {
 	assert(map && map_is_inside(map, x, y));

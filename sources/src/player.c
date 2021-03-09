@@ -76,6 +76,11 @@ void player_dec_nb_bomb(struct player* player) {
 }
 
 static int player_move_aux(struct player* player, struct map* map, int x, int y) {
+	/*
+	return 1 	if the player is allowed to move
+	return 10	if the player has enter into a next level door
+	return 9	if the player has enter into a pervious level door
+	*/
 
 	if (!map_is_inside(map, x, y))
 		return 0;
@@ -84,6 +89,18 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 	case CELL_SCENERY:
 		return 0;
 		break;
+
+	case CELL_DOOR:
+		switch (map_get_cell(map, x, y)){
+			case CELL_DOOR + DOOR_OPENED_NEXT:
+				return 10;
+			
+			case CELL_DOOR + DOOR_OPENED_PREV:
+				return 9;
+
+			default:
+				return 0; //return 0
+		}
 
 	case CELL_BOX:
 		//Est ce qu'on peut bouger la caisse ?
@@ -140,34 +157,39 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 int player_move(struct player* player, struct map* map) {
 	int x = player->x;
 	int y = player->y;
-	int move = 0;
+	int move;
+	/*
+	move = 1 	if the player is allowed to move
+	move = 10	if the player has enter into a next level door
+	move = 9	if the player has enter into a pervious level door
+	*/
 
 	switch (player->direction) {
 	case NORTH:
-		if (player_move_aux(player, map, x, y - 1)) {
+		move = player_move_aux(player, map, x, y - 1);
+		if(move){
 			player->y--;
-			move = 1;
 		}
 		break;
 
 	case SOUTH:
-		if (player_move_aux(player, map, x, y + 1)) {
+		move = player_move_aux(player, map, x, y + 1);
+		if (move) {
 			player->y++;
-			move = 1;
 		}
 		break;
 
 	case WEST:
-		if (player_move_aux(player, map, x - 1, y)) {
+		move = player_move_aux(player, map, x - 1, y);
+		if (move) {
 			player->x--;
-			move = 1;
 		}
 		break;
 
 	case EAST:
-		if (player_move_aux(player, map, x + 1, y)) {
+		move = player_move_aux(player, map, x + 1, y);
+		if (move) {
 			player->x++;
-			move = 1;
 		}
 		break;
 	}

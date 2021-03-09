@@ -23,8 +23,7 @@ struct game {
 	struct player* player;
 };
 
-struct game*
-game_new(void) {
+struct game* game_new(void) {
 	sprite_load(); // load sprites into process memory
 
 	struct game* game = malloc(sizeof(*game));
@@ -138,19 +137,51 @@ static short input_keyboard(struct game* game) {
 				return 1;
 			case SDLK_UP:
 				player_set_current_way(player, NORTH);
-				player_move(player, map);
+				switch(player_move(player, map)){
+					case 10:
+						game->level++;
+						break;
+
+					case 9:
+						game->level--;
+						break;
+				}
 				break;
 			case SDLK_DOWN:
 				player_set_current_way(player, SOUTH);
-				player_move(player, map);
+				switch (player_move(player, map)){
+					case 10:
+						game->level++;
+						break;
+
+					case 9:
+						game->level--;
+						break;
+				}
 				break;
 			case SDLK_RIGHT:
 				player_set_current_way(player, EAST);
-				player_move(player, map);
+				switch (player_move(player, map)){
+				case 10:
+					game->level++;
+					break;
+				
+				case 9:
+					game->level--;
+					break;
+				}
 				break;
 			case SDLK_LEFT:
 				player_set_current_way(player, WEST);
-				player_move(player, map);
+				switch (player_move(player, map)){
+				case 10:
+					game->level++;
+					break;
+
+				case 9:
+					game->level--;
+					break;
+				}
 				break;
 			case SDLK_SPACE:
 				bomb_place(player, map);
