@@ -8,6 +8,7 @@
 #include <game.h>
 #include <window.h>
 #include <misc.h>
+#include <bomb.h>
 
 
 int main(int argc, char *argv[]) {
@@ -30,11 +31,14 @@ int main(int argc, char *argv[]) {
 
 	// game loop
 	// static time rate implementation
+	bomb_init();
+
 	int done = 0;
 	while (!done) {
 		timer = SDL_GetTicks();
 
 		done = game_update(game);
+		bomb_tick(game);
 		game_display(game);
 
 		execution_speed = SDL_GetTicks() - timer;
@@ -48,5 +52,3 @@ int main(int argc, char *argv[]) {
 
 	return EXIT_SUCCESS;
 }
-
-

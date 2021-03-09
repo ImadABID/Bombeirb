@@ -27,7 +27,7 @@ struct player* player_init(int bombs) {
 	player->direction = NORTH;
 	player->bombs = bombs;
 	player->life = 10;
-	player->range = 1;
+	player->range = 3;
 
 	return player;
 }
@@ -63,6 +63,11 @@ void player_set_current_way(struct player* player, enum direction way) {
 int player_get_nb_bomb(struct player* player) {
 	assert(player);
 	return player->bombs;
+}
+
+int player_get_range(struct player* player) {
+	assert(player);
+	return player->range;
 }
 
 void player_inc_nb_bomb(struct player* player) {
