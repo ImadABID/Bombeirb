@@ -21,6 +21,8 @@ void player_set_position(struct player *player, int x, int y);
 int player_get_x(struct player* player);
 int player_get_y(struct player* player);
 
+int player_get_range(struct player* player);
+
 // Set the direction of the next move of the player
 void player_set_current_way(struct player * player, enum direction direction);
 

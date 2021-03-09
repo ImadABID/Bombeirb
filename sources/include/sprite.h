@@ -18,6 +18,7 @@ SDL_Surface* sprite_get_tree();
 SDL_Surface* sprite_get_princess();
 SDL_Surface* sprite_get_box();
 SDL_Surface* sprite_get_bomb(int n);
+SDL_Surface* sprite_get_explosion();
 SDL_Surface* sprite_get_key();
 SDL_Surface* sprite_get_stone();
 SDL_Surface* sprite_get_door_opened();

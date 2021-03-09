@@ -27,9 +27,10 @@ enum bonus_type {
 };
 
 enum scenery_type {
-	SCENERY_STONE = 1,    // 0001 
-	SCENERY_TREE  = 2,    // 0010 
-	SCENERY_PRINCESS = 4  // 0100 
+	SCENERY_STONE = 1,    // 0001
+	SCENERY_TREE  = 2,    // 0010
+	SCENERY_EXPLOSION  = 3,    // 0011
+	SCENERY_PRINCESS = 4  // 0100
 };
 
 enum door_type {
@@ -41,6 +42,7 @@ enum door_type {
 enum compose_type {
 	CELL_TREE     = CELL_SCENERY | SCENERY_TREE,
 	CELL_STONE    = CELL_SCENERY | SCENERY_STONE,
+	CELL_EXPLOSION    = CELL_SCENERY | SCENERY_EXPLOSION,
 	CELL_PRINCESS = CELL_SCENERY | SCENERY_PRINCESS,
 
     CELL_BOX_RANGEINC = CELL_BOX | BONUS_BOMB_RANGE_DEC,

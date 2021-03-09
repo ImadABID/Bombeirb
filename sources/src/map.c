@@ -120,7 +120,14 @@ void display_scenery(struct map* map, int x, int  y, unsigned char type)
 	case SCENERY_STONE:
 		window_display_image(sprite_get_stone(), x, y);
 		break;
+	case SCENERY_EXPLOSION:
+		//les explosions degage apres x tick
+		if(explosion_tick(x,y) == 0){
+			map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_EMPTY);
+		}
 
+		window_display_image(sprite_get_explosion(), x, y);
+		break;
 	case SCENERY_TREE:
 		window_display_image(sprite_get_tree(), x, y);
 		break;
@@ -163,7 +170,7 @@ void map_display(struct map* map)
 	      window_display_image(sprite_get_box(), x, y);
 	      break;
 			case CELL_BOMB:
-				window_display_image(sprite_get_bomb(bomb_tick(x,y)), x, y);
+				window_display_image(sprite_get_bomb(bomb_get_sprite(x,y)), x, y);
 				break;
 	    case CELL_BONUS:
 	      display_bonus(map, x, y, type);

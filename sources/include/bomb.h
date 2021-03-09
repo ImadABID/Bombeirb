@@ -1,7 +1,11 @@
 #include <player.h>
 #include <map.h>
+#include <game.h>
 
 struct bomb;
-int bomb_tick(int x, int y);
-int bomb_place(struct player* player, struct map* map);
-int bomb_explode(int x, int y);
+void bomb_init();
+void bomb_tick(struct game* game);
+void bomb_place(struct player* player, struct map* map);
+void bomb_explode(struct bomb bomb, struct game* game);
+int bomb_get_sprite(int x, int y);
+int explosion_tick(int x, int y);

@@ -40,6 +40,7 @@
 #define BOMB_TTL2       "sprite/bomb2.png"
 #define BOMB_TTL3       "sprite/bomb3.png"
 #define BOMB_TTL4       "sprite/bomb4.png"
+#define EXPLOSION       "sprite/explosion.png"
 
 // Sprites of Bonus
 #define IMG_BONUS_BOMB_RANGE_INC  "sprite/bonus_bomb_range_inc.png"
@@ -70,6 +71,7 @@ SDL_Surface* stone;
 SDL_Surface* tree;
 SDL_Surface* princess;
 SDL_Surface* bomb[4];
+SDL_Surface* explosion;
 
 // bonus
 #define NB_BONUS 4
@@ -122,6 +124,7 @@ static void map_load() {
 	bomb[1] = image_load(BOMB_TTL2);
 	bomb[2] = image_load(BOMB_TTL3);
 	bomb[3] = image_load(BOMB_TTL4);
+	explosion = image_load(EXPLOSION);
 	door_opened = image_load(MAP_DOOR_OPENED);
 	door_closed = image_load(MAP_DOOR_CLOSED);
 }
@@ -130,6 +133,11 @@ static void map_unload() {
 	SDL_FreeSurface(princess);
 	SDL_FreeSurface(tree);
 	SDL_FreeSurface(box);
+	SDL_FreeSurface(bomb[0]);
+	SDL_FreeSurface(bomb[1]);
+	SDL_FreeSurface(bomb[2]);
+	SDL_FreeSurface(bomb[3]);
+	SDL_FreeSurface(explosion);
 	SDL_FreeSurface(goal);
 	SDL_FreeSurface(key);
 	SDL_FreeSurface(stone);
@@ -230,6 +238,11 @@ SDL_Surface* sprite_get_box() {
 SDL_Surface* sprite_get_bomb(int n) {
 	assert(bomb[n]);
 	return bomb[n];
+}
+
+SDL_Surface* sprite_get_explosion() {
+	assert(explosion);
+	return explosion;
 }
 
 SDL_Surface* sprite_get_key() {
