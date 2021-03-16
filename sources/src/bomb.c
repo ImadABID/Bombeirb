@@ -10,11 +10,25 @@ struct bomb {
   int time;
 };
 
-
-
 struct bomb bombList[9];
+
+//La map ou chaque case represente
+//le life time des explosions
 int explosionList[12][12];
 
+//La map ou chaque case represente
+//le bonus présent sur la case
+int bonusMap[12][12];
+
+//C'est pas très propre comme maniere de coder
+//ça augmente la complexité en mémoire
+//mais ça baisse la complexité en temps
+//et l'accès est + pratique que faire une boucle
+//jusqu'a trouver le match des coords x y
+//voila
+
+
+//Les lifetime en tick
 int explosion_time = 20;
 int bomb_time = 100;
 
@@ -62,6 +76,32 @@ void bomb_place(struct player* player, struct map* map){
 
 }
 
+//Explosion d'une case
+int explose_cell(struct map* map, int x, int y, int face){
+	if(map_is_inside(map, x, y)){
+		if(map_get_cell_type(map,x, y) != CELL_EMPTY){
+			face = 0;
+		}
+
+		if(map_get_cell_type(map,x, y) == CELL_BOX){
+			//dropper caisse dans joueur
+			bonusMap[x][y] = map_get_cell(map,x,y)-CELL_BOX;
+			map_set_cell_type(map,x, y, CELL_EXPLOSION);
+			explosionList[x][y] = explosion_time;
+		}
+
+	//si caisse alors face = 0
+	//donc si vide:
+	if(face){
+		bonusMap[x][y] = 0;
+		map_set_cell_type(map,x, y, CELL_EXPLOSION);
+		explosionList[x][y] = explosion_time;
+	}
+	}
+	return face;
+}
+
+//gere l'explosion d'une bombe
 void bomb_explode(struct bomb bomb, struct game* game){
 	int r = player_get_range(game_get_player(game));
 	struct map* map = game_get_current_map(game);
@@ -74,50 +114,25 @@ void bomb_explode(struct bomb bomb, struct game* game){
 	int west = 1;
 
 	for (int i = 1; i < r; i++) {
-		if(!map_is_inside(map, bomb.x, bomb.y-i) || map_get_cell_type(map,bomb.x, bomb.y-i) != CELL_EMPTY ){
-
-			//si une caisse, faire peter la caisse quand meme
-			north = 0;
-
-		}
-		if(!map_is_inside(map, bomb.x, bomb.y+i) || map_get_cell_type(map,bomb.x, bomb.y+i) != CELL_EMPTY ){
-			south = 0;
-		}
-		if(!map_is_inside(map, bomb.x+i, bomb.y) || map_get_cell_type(map,bomb.x+i, bomb.y) != CELL_EMPTY ){
-			east = 0;
-		}
-		if(!map_is_inside(map, bomb.x-i, bomb.y) || map_get_cell_type(map,bomb.x-i, bomb.y) != CELL_EMPTY ){
-			west = 0;
-		}
-
-		printf("c x%i x%i  y%i y%i\n", bomb.x-i, bomb.x+i, bomb.y-i, bomb.y+i);
-		if(north){
-			map_set_cell_type(map,bomb.x, bomb.y-i, CELL_EXPLOSION);
-			explosionList[bomb.x][bomb.y-i] = explosion_time;
-		}
-		if(south){
-			map_set_cell_type(map,bomb.x, bomb.y+i, CELL_EXPLOSION);
-			explosionList[bomb.x][bomb.y+i] = explosion_time;
-		}
-		if(east){
-			map_set_cell_type(map,bomb.x+i, bomb.y, CELL_EXPLOSION);
-			explosionList[bomb.x+i][bomb.y] = explosion_time;
-		}
-		if(west){
-			map_set_cell_type(map,bomb.x-i, bomb.y, CELL_EXPLOSION);
-			explosionList[bomb.x-i][bomb.y] = explosion_time;
-		}
+		north = explose_cell(map, bomb.x, bomb.y-i, north);
+		south = explose_cell(map, bomb.x, bomb.y+i, south);
+		east = explose_cell(map, bomb.x+i, bomb.y, east);
+		west = explose_cell(map, bomb.x-i, bomb.y, west);
 	}
 
 }
-
 
 //Fonction degueu mais ca fait le taff
 int explosion_tick(int x, int y){
 	return explosionList[x/SIZE_BLOC][y/SIZE_BLOC]--;
 }
 
+int box_bonus(int x, int y){
+	return bonusMap[x][y];
+}
 
+
+//tick tte les bombes
 void bomb_tick(struct game* game){
 	for (int i = 0; i < 9; i++) {
 		if(bombList[i].time>0){

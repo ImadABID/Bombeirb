@@ -47,6 +47,7 @@
 #define IMG_BONUS_BOMB_RANGE_DEC  "sprite/bonus_bomb_range_dec.png"
 #define IMG_BONUS_BOMB_NB_INC     "sprite/bonus_bomb_nb_inc.png"
 #define IMG_BONUS_BOMB_NB_DEC     "sprite/bonus_bomb_nb_dec.png"
+#define IMG_BONUS_LIFE     "sprite/banner_life.png"
 
 // Sprites of Players
 #define PLAYER_LEFT     "sprite/player_left.png"
@@ -160,6 +161,7 @@ static void bonus_load() {
 	bonus[BONUS_BOMB_RANGE_DEC] = image_load(IMG_BONUS_BOMB_RANGE_DEC);
 	bonus[BONUS_BOMB_NB_INC] = image_load(IMG_BONUS_BOMB_NB_INC);
 	bonus[BONUS_BOMB_NB_DEC] = image_load(IMG_BONUS_BOMB_NB_DEC);
+	bonus[BONUS_LIFE] = image_load(IMG_BONUS_LIFE);
 }
 
 static void bonus_unload() {
@@ -209,7 +211,7 @@ void sprite_free() {
 }
 
 SDL_Surface* sprite_get_number(short number) {
-	assert(number >= 0 && number < 9);
+	assert(number >= 0 && number <= 9);
 	return numbers[number];
 }
 
