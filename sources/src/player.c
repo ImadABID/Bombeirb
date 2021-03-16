@@ -147,7 +147,7 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 		switch (player->direction) {
 				case NORTH:
 					if (map_is_inside(map, x, y - 1) && map_get_cell_type(map, x, y - 1) == CELL_EMPTY) {
-						map_set_cell_type(map, x, y - 1, CELL_BOX);
+						map_set_cell_type(map, x, y - 1, map_get_cell(map, x, y));
 						map_set_cell_type(map, x, y, CELL_EMPTY);
 						return 1;
 					}
@@ -155,7 +155,7 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 
 				case SOUTH:
 				if (map_is_inside(map, x, y + 1) && map_get_cell_type(map, x, y + 1) == CELL_EMPTY) {
-					map_set_cell_type(map, x, y + 1, CELL_BOX);
+					map_set_cell_type(map, x, y + 1, map_get_cell(map, x, y));
 					map_set_cell_type(map, x, y, CELL_EMPTY);
 					return 1;
 				}
@@ -163,7 +163,7 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 
 				case WEST:
 				if (map_is_inside(map, x - 1, y) && map_get_cell_type(map, x - 1, y) == CELL_EMPTY) {
-					map_set_cell_type(map, x - 1, y, CELL_BOX);
+					map_set_cell_type(map, x - 1, y, map_get_cell(map, x, y));
 					map_set_cell_type(map, x, y, CELL_EMPTY);
 					return 1;
 				}
@@ -171,7 +171,7 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 
 				case EAST:
 				if (map_is_inside(map, x + 1, y) && map_get_cell_type(map, x + 1,y) == CELL_EMPTY) {
-					map_set_cell_type(map, x + 1, y, CELL_BOX);
+					map_set_cell_type(map, x + 1, y, map_get_cell(map, x, y));
 					map_set_cell_type(map, x, y, CELL_EMPTY);
 					return 1;
 				}
