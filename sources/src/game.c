@@ -53,7 +53,7 @@ struct game* game_new(void) {
 	game->levels = nbr_levels;				//game->levels = 1;
 	game->level = level;					//game->level = 0;
 
-	game->player = player_init(3);
+	game->player = player_init(9);
 	// Set default location of the player
 	player_set_position(game->player, x, y);
 
@@ -94,7 +94,7 @@ void game_banner_display(struct game* game) {
 	window_display_image(sprite_get_banner_life(), x, y);
 
 	x = white_bloc + SIZE_BLOC;
-	window_display_image(sprite_get_number(7), x, y);
+	window_display_image(sprite_get_number(player_get_life(game_get_player(game))), x, y);
 
 	x = 2 * white_bloc + 2 * SIZE_BLOC;
 	window_display_image(sprite_get_banner_bomb(), x, y);
@@ -107,7 +107,7 @@ void game_banner_display(struct game* game) {
 	window_display_image(sprite_get_banner_range(), x, y);
 
 	x = 3 * white_bloc + 5 * SIZE_BLOC;
-	window_display_image(sprite_get_number(3), x, y);
+	window_display_image(sprite_get_number(player_get_range(game_get_player(game))), x, y);
 }
 
 void game_display(struct game* game) {
@@ -165,7 +165,7 @@ static short input_keyboard(struct game* game) {
 				case 10:
 					game->level++;
 					break;
-				
+
 				case 9:
 					game->level--;
 					break;

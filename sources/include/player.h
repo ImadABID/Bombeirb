@@ -21,6 +21,7 @@ void player_set_position(struct player *player, int x, int y);
 int player_get_x(struct player* player);
 int player_get_y(struct player* player);
 
+int player_get_life(struct player* player);
 void player_inc_life(struct player * player);
 void player_dec_life(struct player * player);
 

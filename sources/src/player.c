@@ -26,7 +26,7 @@ struct player* player_init(int bombs) {
 
 	player->direction = NORTH;
 	player->bombs = bombs;
-	player->life = 10;
+	player->life = 8;
 	player->range = 3;
 
 	return player;
@@ -68,6 +68,11 @@ int player_get_nb_bomb(struct player* player) {
 int player_get_range(struct player* player) {
 	assert(player);
 	return player->range;
+}
+
+int player_get_life(struct player* player) {
+	assert(player);
+	return player->life;
 }
 
 void player_dec_life(struct player* player) {
