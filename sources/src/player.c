@@ -70,14 +70,44 @@ int player_get_range(struct player* player) {
 	return player->range;
 }
 
+void player_dec_life(struct player* player) {
+	assert(player);
+	if(player->life>0){
+		player->life -= 1;
+	} else {
+	//game over
+	}
+}
+
+void player_inc_life(struct player* player) {
+	assert(player);
+	if(player->life<9){
+	player->life += 1;}
+}
+
+
+void player_dec_range(struct player* player) {
+	assert(player);
+	if(player->range>0){
+	player->range -= 1;}
+}
+
+void player_inc_range(struct player* player) {
+	assert(player);
+	if(player->range<9){
+	player->range += 1;}
+}
+
 void player_inc_nb_bomb(struct player* player) {
 	assert(player);
-	player->bombs += 1;
+	if(player->bombs<9){
+	player->bombs += 1;}
 }
 
 void player_dec_nb_bomb(struct player* player) {
 	assert(player);
-	player->bombs -= 1;
+	if(player->bombs>0){
+	player->bombs -= 1;}
 }
 
 static int player_move_aux(struct player* player, struct map* map, int x, int y) {
@@ -99,7 +129,7 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 		switch (map_get_cell(map, x, y)){
 			case CELL_DOOR + DOOR_OPENED_NEXT:
 				return 10;
-			
+
 			case CELL_DOOR + DOOR_OPENED_PREV:
 				return 9;
 
@@ -146,6 +176,26 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 		break;
 
 	case CELL_BONUS:
+		switch (map_get_cell(map, x, y) - CELL_BONUS) {
+			case 1:
+				player_dec_range(player);
+				break;
+			case 2:
+				player_inc_range(player);
+				break;
+			case 3:
+				player_dec_nb_bomb(player);
+				break;
+			case 4:
+				player_inc_nb_bomb(player);
+				break;
+			case 5:
+				break;
+			case 6:
+				player_inc_life(player);
+				break;
+		}
+		map_set_cell_type(map,x,y,CELL_EMPTY);
 		break;
 
 	case CELL_MONSTER:
@@ -200,8 +250,7 @@ int player_move(struct player* player, struct map* map) {
 	}
 
 	if (move) {
-		//bon bah on bouge la
-		//map_set_cell_type(map, x, y, CELL_EMPTY);
+
 	}
 	return move;
 }

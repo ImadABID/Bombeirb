@@ -105,11 +105,14 @@ void display_bonus(struct map* map, int x, int y, unsigned char type)
 		break;
 
 	case BONUS_BOMB_NB_DEC:
-		window_display_image(sprite_get_bonus(BONUS_BOMB_RANGE_DEC), x, y);
+		window_display_image(sprite_get_bonus(BONUS_BOMB_NB_DEC), x, y);
 		break;
 
 	case BONUS_BOMB_NB_INC:
 		window_display_image(sprite_get_bonus(BONUS_BOMB_NB_INC), x, y);
+		break;
+	case BONUS_LIFE:
+		window_display_image(sprite_get_bonus(BONUS_LIFE), x, y);
 		break;
 	}
 }
@@ -123,7 +126,12 @@ void display_scenery(struct map* map, int x, int  y, unsigned char type)
 	case SCENERY_EXPLOSION:
 		//les explosions degage apres x tick
 		if(explosion_tick(x,y) == 0){
-			map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_EMPTY);
+			int bonus = box_bonus(x/SIZE_BLOC, y/SIZE_BLOC);
+			if(bonus == 0){
+				map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_EMPTY);
+			} else {
+				map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_BONUS + bonus);
+			}
 		}
 
 		window_display_image(sprite_get_explosion(), x, y);
