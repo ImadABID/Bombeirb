@@ -76,7 +76,7 @@ int map_get_height(struct map* map)
 	return map->height;
 }
 
-enum cell_type map_get_cell(struct map* map, int x, int y){
+int map_get_cell(struct map* map, int x, int y){
 	return map->grid[CELL(x,y)];
 }
 
@@ -145,6 +145,18 @@ void display_scenery(struct map* map, int x, int  y, unsigned char type)
 	}
 }
 
+void display_door(struct map* map, int x, int y, unsigned char type){
+	switch (type & 0x0f){
+	case DOOR_CLOSED:
+		window_display_image(sprite_get_door_closed(), x, y);
+		break;
+	
+	default:
+		window_display_image(sprite_get_door_opened(), x, y);
+		break;
+	}
+}
+
 void map_display(struct map* map)
 {
 	assert(map != NULL);
@@ -175,8 +187,9 @@ void map_display(struct map* map)
 	      window_display_image(sprite_get_key(), x, y);
 	      break;
 	    case CELL_DOOR:
+		  display_door(map, x, y, type);
 	      // pas de gestion du type de porte
-	      window_display_image(sprite_get_door_opened(), x, y);
+	      //window_display_image(sprite_get_door_opened(), x, y);
 	      break;
 	    }
 	  }
