@@ -14,13 +14,15 @@
 #include <sprite.h>
 #include <window.h>
 #include <bomb.h>
-
-#include "str_formating.h"
+#include <monster.h>
+#include <str_formating.h>
 
 struct map {
 	int width;
 	int height;
 	unsigned char* grid;
+	struct monster *Monsters;
+	int nbr_Monsters;
 };
 
 #define CELL(i,j) ( (i) + (j) * map->width)
@@ -61,6 +63,7 @@ void map_free(struct map *map)
 	if (map == NULL )
 		return;
 	free(map->grid);
+	monsters_free(map->Monsters);
 	free(map);
 }
 
@@ -169,9 +172,9 @@ void map_display(struct map* map)
 	    case CELL_BOX:
 	      window_display_image(sprite_get_box(), x, y);
 	      break;
-			case CELL_BOMB:
-				window_display_image(sprite_get_bomb(bomb_get_sprite(x,y)), x, y);
-				break;
+		case CELL_BOMB:
+			window_display_image(sprite_get_bomb(bomb_get_sprite(x,y)), x, y);
+			break;
 	    case CELL_BONUS:
 	      display_bonus(map, x, y, type);
 	      break;
@@ -180,12 +183,12 @@ void map_display(struct map* map)
 	      break;
 	    case CELL_DOOR:
 		  display_door(map, x, y, type);
-	      // pas de gestion du type de porte
-	      //window_display_image(sprite_get_door_opened(), x, y);
 	      break;
 	    }
 	  }
 	}
+
+	monsters_display(map->Monsters, map->nbr_Monsters);
 }
 
 struct map* map_get_static(void)
@@ -246,11 +249,71 @@ struct map* map_get(char *map_prefix, int level){
 	for(int i=0;i<width*height;i++){
 			char *str_info=malloc(3);
 			fscanf(f,"%s",str_info);
-			map->grid[i]=(char)atoi(str_info);
+			map->grid[i] = (char)atoi(str_info);
 			free(str_info);
 	}
 
     fclose(f);
 
+	// Generating Monsters
+	map->nbr_Monsters = level+1;
+	map->Monsters = map_generate_monsters_randomly(map->nbr_Monsters, map);
+
 	return map;
+}
+
+struct monster *map_generate_monsters_randomly(int n, struct map *map){
+	struct monster *Monsters = monsters_alloc(n);
+
+	srand(time(0));
+    for(int i=0; i<n; i++){
+		struct monster *monster = monsters_get_by_index(Monsters, i);
+		monster_set_status(monster, 1);
+		monster_set_direction(monster, (int) ((double) rand()/RAND_MAX*3+0.5));
+		monster_set_x(monster, ((double) rand()/RAND_MAX*(map_get_width(map)-1)+0.5));
+		monster_set_y(monster, ((double) rand()/RAND_MAX*(map_get_height(map)-1)+0.5));
+        while(!map_accept_monster(monster, map)){
+            monster_set_x(monster, ((double) rand()/RAND_MAX*(map_get_width(map)-1)+0.5));
+			monster_set_y(monster, ((double) rand()/RAND_MAX*(map_get_height(map)-1)+0.5));
+        }
+        map_set_cell_type(map, monster_get_x(monster), monster_get_y(monster), CELL_MONSTER);
+    }
+
+    return Monsters;
+}
+
+char map_accept_monster(struct monster *monster, struct map *map){
+	int x = monster_get_x(monster);
+	int y = monster_get_y(monster);
+
+    char yes = map_get_cell_type(map, x, y) == CELL_EMPTY;
+	
+	if(x-1>=0){
+		if(y-1>=0)
+			yes = yes && map_get_cell_type(map, x-1,y-1) != CELL_DOOR;
+		
+		yes = yes && map_get_cell_type(map, x-1,y) != CELL_DOOR;
+
+		if(y+1<map->height)
+			yes = yes && map_get_cell_type(map, x-1,y+1) != CELL_DOOR;
+	}
+
+	if(y-1>=0)
+		yes = yes && map_get_cell_type(map, x,y-1) != CELL_DOOR;
+
+	if(y+1<map->height)
+		yes = yes && map_get_cell_type(map, x,y+1) != CELL_DOOR;
+
+
+	if(x+1<map->width){
+		if(y-1>=0)
+			yes = yes && map_get_cell_type(map, x+1,y-1) != CELL_DOOR;
+
+		yes = yes && map_get_cell_type(map, x+1,y) != CELL_DOOR;
+
+		if(y+1<map->height)
+			yes = yes && map_get_cell_type(map, x+1,y+1) != CELL_DOOR;
+	}
+
+    return yes;
 }

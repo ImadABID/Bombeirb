@@ -82,4 +82,8 @@ struct map* map_get(char *map_prefix, int level);
 // Display the map on the screen
 void map_display(struct map* map);
 
+//For monsters
+struct monster *map_generate_monsters_randomly(int n, struct map *map);
+char map_accept_monster(struct monster *monster, struct map *map);
+
 #endif /* MAP_H_ */

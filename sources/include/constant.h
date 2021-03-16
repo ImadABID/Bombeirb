@@ -5,7 +5,7 @@
 #ifndef CONSTANT_H_
 #define CONSTANT_H_
 
-#define WINDOW_NAME "[PG110] Bombeirb 2018-2019"
+#define WINDOW_NAME "[PG110] Bombeirb 2020-2021"
 
 // Size (# of pixels) of a cell of the map
 #define SIZE_BLOC       40

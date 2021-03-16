@@ -54,6 +54,12 @@
 #define PLAYER_RIGHT    "sprite/player_right.png"
 #define PLAYER_DOWN     "sprite/player_down.png"
 
+// Sprites of Monsters
+#define MONSTER_LEFT     "sprite/monster_left.png"
+#define MONSTER_UP       "sprite/monster_up.png"
+#define MONSTER_RIGHT    "sprite/monster_right.png"
+#define MONSTER_DOWN     "sprite/monster_down.png"
+
 // banner
 SDL_Surface* numbers[10];
 SDL_Surface* banner_life;
@@ -79,6 +85,9 @@ SDL_Surface* bonus[NB_BONUS + 1];
 
 // player
 SDL_Surface* player_img[4];
+
+// monster
+SDL_Surface* monster_img[4];
 
 static void banner_load() {
 	// numbers imgs
@@ -166,9 +175,21 @@ static void player_load() {
 	player_img[SOUTH] = image_load(PLAYER_DOWN);
 }
 
+static void monster_load() {
+	monster_img[WEST] = image_load(MONSTER_LEFT);
+	monster_img[EAST] = image_load(MONSTER_RIGHT);
+	monster_img[NORTH] = image_load(MONSTER_UP);
+	monster_img[SOUTH] = image_load(MONSTER_DOWN);
+}
+
 static void player_unload() {
 	for (int i = 0; i < 4; i++)
 		SDL_FreeSurface(player_img[i]);
+}
+
+static void monster_unload() {
+	for (int i = 0; i < 4; i++)
+		SDL_FreeSurface(monster_img[i]);
 }
 
 void sprite_load() {
@@ -176,6 +197,7 @@ void sprite_load() {
 	bonus_load();
 	banner_load();
 	player_load();
+	monster_load();
 }
 
 void sprite_free() {
@@ -183,6 +205,7 @@ void sprite_free() {
 	bonus_unload();
 	banner_unload();
 	player_unload();
+	monster_unload();
 }
 
 SDL_Surface* sprite_get_number(short number) {
@@ -193,6 +216,11 @@ SDL_Surface* sprite_get_number(short number) {
 SDL_Surface* sprite_get_player(enum direction direction) {
 	assert(player_img[direction]);
 	return player_img[direction];
+}
+
+SDL_Surface* sprite_get_monster(enum direction direction){
+	assert(monster_img[direction]);
+	return monster_img[direction];
 }
 
 SDL_Surface* sprite_get_banner_life() {

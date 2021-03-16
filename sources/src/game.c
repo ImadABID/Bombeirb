@@ -13,8 +13,7 @@
 #include <window.h>
 #include <sprite.h>
 #include <bomb.h>
-
-#include "str_formating.h"
+#include <str_formating.h>
 
 struct game {
 	struct map** maps;       // the game's map
