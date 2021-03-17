@@ -65,3 +65,29 @@ void monsters_display(struct monster *Monsters, int nbr_Monsters){
             window_display_image(sprite_get_monster(Monsters[i].direction), Monsters[i].x * SIZE_BLOC, Monsters[i].y * SIZE_BLOC);
     }
 }
+
+void monster_step(struct monster *monster, enum direction direction){
+    int dx=0;
+    int dy=0;
+
+    switch (direction){
+        case NORTH:
+            dy=1;
+            break;
+        
+        case EAST:
+            dx=1;
+            break;
+        
+        case SOUTH:
+            dx=-1;
+            break;
+        
+        case WEST:
+            dy=-1;
+            break;
+    }
+
+    monster->x+=dx;
+    monster->y+=dy;
+}

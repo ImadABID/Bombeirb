@@ -85,5 +85,9 @@ void map_display(struct map* map);
 //For monsters
 struct monster *map_generate_monsters_randomly(int n, struct map *map);
 char map_accept_monster(struct monster *monster, struct map *map);
+void map_update_monsters(struct map *map, struct monster *Monsters, int nbr_Monsters);
+
+//Monters movement types
+void map_move_monster_randomly(struct map *map, struct monster *Monsters, int nbr_Monsters);
 
 #endif /* MAP_H_ */

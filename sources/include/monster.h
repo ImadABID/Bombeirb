@@ -19,6 +19,9 @@ char monster_get_status(struct monster *monster);
 void monster_set_direction(struct monster *monster, enum direction direction);
 enum direction monster_get_direction(struct monster *monster);
 
+//monster
+void monster_step(struct monster *monster, enum direction direction);
+
 //monsters
 struct monster *monsters_alloc(int n);
 struct monster *monsters_get_by_index(struct monster *Monsters, int i);

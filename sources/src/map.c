@@ -196,6 +196,7 @@ void map_display(struct map* map)
 	  }
 	}
 
+	map_update_monsters(map, map->Monsters, map->nbr_Monsters);
 	monsters_display(map->Monsters, map->nbr_Monsters);
 }
 
@@ -278,11 +279,11 @@ struct monster *map_generate_monsters_randomly(int n, struct map *map){
 		struct monster *monster = monsters_get_by_index(Monsters, i);
 		monster_set_status(monster, 1);
 		monster_set_direction(monster, (int) ((double) rand()/RAND_MAX*3+0.5));
-		monster_set_x(monster, ((double) rand()/RAND_MAX*(map_get_width(map)-1)+0.5));
-		monster_set_y(monster, ((double) rand()/RAND_MAX*(map_get_height(map)-1)+0.5));
+		monster_set_x(monster, (int) ((double) rand()/RAND_MAX*(map_get_width(map)-1)+0.5));
+		monster_set_y(monster, (int) ((double) rand()/RAND_MAX*(map_get_height(map)-1)+0.5));
         while(!map_accept_monster(monster, map)){
-            monster_set_x(monster, ((double) rand()/RAND_MAX*(map_get_width(map)-1)+0.5));
-			monster_set_y(monster, ((double) rand()/RAND_MAX*(map_get_height(map)-1)+0.5));
+            monster_set_x(monster, (int) ((double) rand()/RAND_MAX*(map_get_width(map)-1)+0.5));
+			monster_set_y(monster, (int) ((double) rand()/RAND_MAX*(map_get_height(map)-1)+0.5));
         }
         map_set_cell_type(map, monster_get_x(monster), monster_get_y(monster), CELL_MONSTER);
     }
@@ -293,6 +294,9 @@ struct monster *map_generate_monsters_randomly(int n, struct map *map){
 char map_accept_monster(struct monster *monster, struct map *map){
 	int x = monster_get_x(monster);
 	int y = monster_get_y(monster);
+
+	if( x<0 || y<0 || x>=map->width || y>=map->height )
+		return 0;
 
     char yes = map_get_cell_type(map, x, y) == CELL_EMPTY;
 	
@@ -324,4 +328,49 @@ char map_accept_monster(struct monster *monster, struct map *map){
 	}
 
     return yes;
+}
+
+void map_update_monsters(struct map *map, struct monster *Monsters, int nbr_Monsters){
+	map_move_monster_randomly(map, Monsters, nbr_Monsters);
+}
+
+void map_move_monster_randomly(struct map *map, struct monster *Monsters, int nbr_Monsters){
+	double p_stay = 0.15;
+	double p_same_direction = 0.5;
+	//double p_change_direction = (1-p_stay-p_same_direction)/7;
+
+	int u;
+	int last_x,last_y;
+	for(int i=0; i<nbr_Monsters; i++){
+		struct monster *monster = monsters_get_by_index(Monsters, i);
+		if(monster_get_status(monster)){
+			u = (double) rand()/RAND_MAX+0.5;
+			if(u<p_stay){
+				continue;
+			}else if(u>=p_stay && u < p_stay + p_same_direction){
+				last_x = monster_get_x(monster);
+				last_y = monster_get_y(monster);
+				monster_step(monster, monster_get_direction(monster));
+				if(map_accept_monster(monster, map)){
+					map_set_cell_type(map, last_x, last_y, CELL_EMPTY);
+					map_set_cell_type(map, monster_get_x(monster), monster_get_y(monster), CELL_MONSTER);
+				}else{
+					monster_set_x(monster, last_x);
+					monster_set_y(monster, last_y);
+				}
+			}else{
+				last_x = monster_get_x(monster);
+				last_y = monster_get_y(monster);
+				monster_set_direction(monster, (int) ((double) rand()/RAND_MAX*3+0.5));
+				monster_step(monster, monster_get_direction(monster));
+				if(map_accept_monster(monster, map)){
+					map_set_cell_type(map, last_x, last_y, CELL_EMPTY);
+					map_set_cell_type(map, monster_get_x(monster), monster_get_y(monster), CELL_MONSTER);
+				}else{
+					monster_set_x(monster, last_x);
+					monster_set_y(monster, last_y);
+				}
+			}
+		}
+	}
 }
