@@ -45,7 +45,7 @@ struct game* game_new(void) {
 
 	game->maps = malloc(nbr_levels*sizeof(struct map*));
 	for(int i=0; i<nbr_levels; i++){
-		game->maps[i] = map_get(map_prefix, i);
+		game->maps[i] = map_get(map_prefix, i, nbr_levels);
 	}
 	free(map_prefix);
 
