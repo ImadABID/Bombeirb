@@ -72,7 +72,7 @@ void monster_step(struct monster *monster, enum direction direction){
 
     switch (direction){
         case NORTH:
-            dy=1;
+            dy=-1;
             break;
         
         case EAST:
@@ -80,11 +80,11 @@ void monster_step(struct monster *monster, enum direction direction){
             break;
         
         case SOUTH:
-            dx=-1;
+            dy=1;
             break;
         
         case WEST:
-            dy=-1;
+            dx=-1;
             break;
     }
 
