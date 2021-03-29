@@ -7,6 +7,8 @@
 
 #define WINDOW_NAME "[PG110] Bombeirb 2020-2021"
 
+#define SAVE_FILE "bin/bombeirb.save"
+
 // Size (# of pixels) of a cell of the map
 #define SIZE_BLOC       40
 

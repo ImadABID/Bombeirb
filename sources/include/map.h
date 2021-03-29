@@ -5,6 +5,8 @@
 #ifndef MAP_H_
 #define MAP_H_
 
+#include <stdio.h>
+
 enum cell_type {
 	CELL_EMPTY=0x00,   		//  0000 0000 //1 octet
 	CELL_SCENERY=0x10, 		//  0001 0000
@@ -58,7 +60,10 @@ struct map;
 // Create a new empty map
 struct map* map_new(int width, int height);
 void map_free(struct map* map);
+void map_save(struct map* map, FILE *f);
+struct map *map_load_progress(FILE *f);
 
+struct map *map_get_by_index(struct map **Maps, int i);
 
 // Return the height and width of a map
 int map_get_width(struct map* map);

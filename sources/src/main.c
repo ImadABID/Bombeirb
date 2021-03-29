@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
 		exit(EXIT_FAILURE);
 	}
 
-	struct game* game = game_new();
+	struct game* game= game_load();
+	//struct game* game= game_new();
 
 	window_create(SIZE_BLOC * STATIC_MAP_WIDTH,
 	SIZE_BLOC * STATIC_MAP_HEIGHT + BANNER_HEIGHT + LINE_HEIGHT);
@@ -45,6 +46,8 @@ int main(int argc, char *argv[]) {
 		if (execution_speed < ideal_speed)
 			SDL_Delay(ideal_speed - execution_speed); // we are ahead of ideal time. let's wait.
 	}
+
+	game_save(game);
 
 	game_free(game);
 

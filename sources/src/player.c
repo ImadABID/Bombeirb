@@ -32,6 +32,27 @@ struct player* player_init(int bombs) {
 	return player;
 }
 
+//Sauvegarde / Chargement partie
+void player_save(struct player *player, FILE *f){
+	fwrite(&player->x, sizeof(player->x), 1, f);
+    fwrite(&player->y, sizeof(player->y), 1, f);
+    fwrite(&player->direction, sizeof(player->direction), 1, f);
+    fwrite(&player->bombs, sizeof(player->bombs), 1, f);
+	fwrite(&player->life, sizeof(player->life), 1, f);
+	fwrite(&player->range, sizeof(player->range), 1, f);
+}
+
+struct player *player_load(FILE *f){
+	struct player *player = malloc(sizeof(struct player));
+	fread(&player->x, sizeof(player->x), 1, f);
+	fread(&player->y, sizeof(player->y), 1, f);
+	fread(&player->direction, sizeof(player->direction), 1, f);
+    fread(&player->bombs, sizeof(player->bombs), 1, f);
+	fread(&player->life, sizeof(player->life), 1, f);
+	fread(&player->range, sizeof(player->range), 1, f);
+
+	return player;
+}
 
 void player_set_position(struct player *player, int x, int y) {
 	assert(player);

@@ -1,11 +1,19 @@
 #ifndef MONSTER_H_
 #define MONSTER_H_
 
+#include <stdio.h>
+
 #include <constant.h>
 
 struct monster;
 
+//Sauvegarde / Chargement partie
+void monster_save(struct monster *monster, FILE *f);
+void monster_load(struct monster *monster, FILE *f);
+
 // monster Getters&Seters
+
+int monster_get_struct_size();
 
 void monster_set_x(struct monster *monster, int x);
 int monster_get_x(struct monster *monster);

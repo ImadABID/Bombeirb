@@ -201,3 +201,41 @@ int game_update(struct game* game) {
 
 	return 0;
 }
+
+void game_save(struct game *game){
+	FILE *f = fopen(SAVE_FILE, "wb");
+	fwrite(&(game->level), sizeof(game->level), 1, f);
+	fwrite(&(game->levels), sizeof(game->levels), 1, f);
+	player_save(game->player, f);
+	struct map *map;
+	for(int i=0; i<game->levels; i++){
+		map = map_get_by_index(game->maps, i);
+		map_save(map, f);
+	}
+	fclose(f);
+}
+
+struct game *game_load(){
+	FILE *f = fopen(SAVE_FILE, "rb");
+	if(f==NULL)
+		return game_new();
+
+	sprite_load();
+
+	struct game *game = malloc(sizeof(struct game));
+
+	fread(&game->level, sizeof(game->level), 1, f);
+	fread(&(game->levels), sizeof(game->levels), 1, f);
+
+	game->player = player_load(f);
+
+
+	game->maps = malloc(game->levels * sizeof(struct map*));
+	for(int i=0; i<game->levels; i++){
+		game->maps[i] = map_load_progress(f);
+	}
+
+	fclose(f);
+
+	return game;
+}

@@ -11,7 +11,26 @@ struct monster{
     char alive;
 };
 
+//Sauvegarde / Chargement partie
+void monster_save(struct monster *monster, FILE *f){
+    fwrite(&monster->x, sizeof(monster->x), 1, f);
+    fwrite(&monster->y, sizeof(monster->y), 1, f);
+    fwrite(&monster->direction, sizeof(monster->direction), 1, f);
+    fwrite(&monster->alive, sizeof(monster->alive), 1, f);
+}
+
+void monster_load(struct monster *monster, FILE *f){
+    fread(&monster->x, sizeof(monster->x), 1, f);
+    fread(&monster->y, sizeof(monster->y), 1, f);
+    fread(&monster->direction, sizeof(monster->direction), 1, f);
+    fread(&monster->alive, sizeof(monster->alive), 1, f);
+}
+
 // monster Getters&Seters
+
+int monster_get_struct_size(){
+    return sizeof(struct monster);
+}
 
 void monster_set_x(struct monster *monster, int x){
     monster->x = x;

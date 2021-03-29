@@ -5,6 +5,8 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
+#include <stdio.h>
+
 #include <map.h>
 #include <constant.h>
 
@@ -13,6 +15,10 @@ struct player;
 // Creates a new player with a given number of available bombs
 struct player* player_init(int bomb_number);
 void   player_free(struct player* player);
+
+//Sauvegarde / Chargement partie
+void player_save(struct player *player, FILE *f);
+struct player *player_load(FILE *f);
 
 // Set the position of the player
 void player_set_position(struct player *player, int x, int y);

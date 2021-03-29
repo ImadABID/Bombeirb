@@ -17,6 +17,10 @@ struct game* game_new();
 // Free a game
 void game_free(struct game* game);
 
+//Sauvegarde / Chargement partie
+void game_save(struct game *game);
+struct game *game_load();
+
 // Return the player of the current game
 struct player* game_get_player(struct game* game);
 

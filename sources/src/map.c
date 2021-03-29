@@ -53,6 +53,50 @@ struct map* map_new(int width, int height)
 	return map;
 }
 
+void map_save(struct map* map, FILE *f){
+	fwrite(&map->width, sizeof(map->width), 1, f);
+	fwrite(&map->height, sizeof(map->height), 1, f);
+	fwrite(&map->Monsters_movement_probability, sizeof(map->Monsters_movement_probability), 1, f);
+	fwrite(&map->nbr_Monsters, sizeof(map->nbr_Monsters), 1, f);
+	
+	fwrite(map->grid, sizeof(map->grid[0]), map->width*map->height, f);
+	
+	struct monster *monster;
+	for(int i=0; i<map->nbr_Monsters ; i++){
+		monster = monsters_get_by_index(map->Monsters, i);
+		monster_save(monster, f);
+	}
+}
+
+struct map *map_load_progress(FILE *f){
+	struct map *map = malloc(sizeof(struct map));
+
+	fread(&map->width, sizeof(map->width), 1, f);
+	fread(&map->height, sizeof(map->height), 1, f);
+	fread(&map->Monsters_movement_probability, sizeof(map->Monsters_movement_probability), 1, f);
+	fread(&map->nbr_Monsters, sizeof(map->nbr_Monsters), 1, f);
+
+	printf("map->width = %d \tmap->height= %d\n",map->width, map->height);
+	printf("map->nbr_Monsters%d\n",map->nbr_Monsters);
+
+	map->grid = malloc(map->width*map->height*sizeof(unsigned char));
+	if(map->grid == NULL){
+		printf("grid isn't allocated\n");
+	}else{
+		printf("grid was allocated\n");
+	}
+	fread(map->grid, sizeof(unsigned char), map->width*map->height, f);
+
+	map->Monsters = malloc(map->nbr_Monsters*sizeof(monster_get_struct_size()));
+	struct monster *monster;
+	for(int i=0; i<map->nbr_Monsters ; i++){
+		monster = monsters_get_by_index(map->Monsters, i);
+		monster_load(monster, f);
+	}
+
+	return map;
+}
+
 int map_is_inside(struct map* map, int x, int y)
 {
 	assert(map);
@@ -201,6 +245,10 @@ void map_display(struct map* map)
 	monsters_display(map->Monsters, map->nbr_Monsters);
 }
 
+struct map *map_get_by_index(struct map **Maps, int i){
+	return Maps[i];
+}
+
 struct map* map_get_static(void)
 {
 	struct map* map = map_new(STATIC_MAP_WIDTH, STATIC_MAP_HEIGHT);
@@ -269,7 +317,6 @@ struct map* map_get(char *map_prefix, int level, int nbr_levels){
 	map->nbr_Monsters = level+1;
 	map->Monsters = map_generate_monsters_randomly(map->nbr_Monsters, map);
 	map->Monsters_movement_probability = ((double) (level+1)) / ((double) nbr_levels);
-	// le coefficient va etre choisi en fonction du prefix de la map
 
 	return map;
 }
@@ -360,11 +407,22 @@ void map_monsters_group_movement_manager(
 			monsters_planning_func(map, Monsters, nbr_Monsters);
 		}
 		t=0;
+
+		//--------	Déplacement non simultané
 		monster_to_move_index = (int) (((double) rand()) / ((double) RAND_MAX) * ( (double) map->nbr_Monsters-1) + 0.5 );
 		struct monster *monster = monsters_get_by_index(Monsters, monster_to_move_index);
 		if(monster_get_status(monster)){
 			monster_move_func(map, monster);
 		}
+		//---------
+
+		/* Déplacement simultané
+		struct monster *monster;
+		for(int i = 0; i<nbr_Monsters; i++){
+			monster = monsters_get_by_index(Monsters, i);
+			monster_move_func(map, monster);
+		}
+		*/
 	}
 }
 
