@@ -76,18 +76,10 @@ struct map *map_load_progress(FILE *f){
 	fread(&map->Monsters_movement_probability, sizeof(map->Monsters_movement_probability), 1, f);
 	fread(&map->nbr_Monsters, sizeof(map->nbr_Monsters), 1, f);
 
-	printf("map->width = %d \tmap->height= %d\n",map->width, map->height);
-	printf("map->nbr_Monsters%d\n",map->nbr_Monsters);
-
 	map->grid = malloc(map->width*map->height*sizeof(unsigned char));
-	if(map->grid == NULL){
-		printf("grid isn't allocated\n");
-	}else{
-		printf("grid was allocated\n");
-	}
 	fread(map->grid, sizeof(unsigned char), map->width*map->height, f);
 
-	map->Monsters = malloc(map->nbr_Monsters*sizeof(monster_get_struct_size()));
+	map->Monsters = malloc(map->nbr_Monsters*monster_get_struct_size());
 	struct monster *monster;
 	for(int i=0; i<map->nbr_Monsters ; i++){
 		monster = monsters_get_by_index(map->Monsters, i);
