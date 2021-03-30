@@ -90,16 +90,14 @@ void map_display(struct map* map);
 //For monsters
 struct monster *map_generate_monsters_randomly(int n, struct map *map);
 char map_accept_monster(struct monster *monster, struct map *map);
-void map_update_monsters(struct map *map, struct monster *Monsters, int nbr_Monsters);
-
+void map_update_monsters(struct map *map, struct monster *monster_list);
 
 //Monster movement manager
 void map_monsters_group_movement_manager(
 	struct map *map,
-	struct monster *Monsters,
-	int nbr_Monsters,
+	struct monster *monster_list,
 	void monster_move_func(struct map *, struct monster *),
-	void *(monsters_planning_func)(struct map *map, struct monster *Monsters, int nbr_Monsters));
+	void *(monsters_planning_func)(struct map *map, struct monster *monster_list));
 
 //Monters : Random strategy
 void map_move_monster_randomly(struct map *map, struct monster *monster);

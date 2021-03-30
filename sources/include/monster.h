@@ -3,13 +3,13 @@
 
 #include <stdio.h>
 
-#include <constant.h>
+#include "constant.h"
 
 struct monster;
 
 //Sauvegarde / Chargement partie
 void monster_save(struct monster *monster, FILE *f);
-void monster_load(struct monster *monster, FILE *f);
+char monster_load(struct monster *monster, FILE *f);
 
 // monster Getters&Seters
 
@@ -27,13 +27,27 @@ char monster_get_status(struct monster *monster);
 void monster_set_direction(struct monster *monster, enum direction direction);
 enum direction monster_get_direction(struct monster *monster);
 
+struct monster* monster_get_next_monster(struct monster *monster);
+void monster_set_next_monster(struct monster *monster, struct monster *monster_next);
+
 //monster
 void monster_step(struct monster *monster, enum direction direction);
 
 //monsters
 struct monster *monsters_alloc(int n);
 struct monster *monsters_get_by_index(struct monster *Monsters, int i);
-void monsters_free(struct monster *Monsters);
-void monsters_display(struct monster *Monsters, int nbr_Monsters);
+void monsters_display(struct monster *monster_list);
+
+//List
+struct monster *monster_list_new();
+void monster_list_free(struct monster * ml);
+
+void monster_list_append(struct monster *ml, struct monster *m);
+struct monster* monster_list_get(struct monster *ml);
+struct monster* monster_list_read(struct monster *ml);
+
+char monster_list_empty(struct monster *monster_list);
+int monster_list_lenght(struct monster *ml);
+struct monster *monster_list_get_by_index(struct monster *monster_list, int i);
 
 #endif

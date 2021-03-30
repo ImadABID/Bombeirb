@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
 		done = game_update(game);
 		bomb_tick(game);
 		game_display(game);
+		//menu_display(1);
 
 		execution_speed = SDL_GetTicks() - timer;
 		if (execution_speed < ideal_speed)
