@@ -83,6 +83,9 @@ char menu_display(char **menu_option, unsigned char nbr_options){
                         case SDLK_RETURN:
                             return cur;
                         
+                        case SDLK_p: //tmp_solution
+                            return 0;
+
                         default:
 				            break;
                     }

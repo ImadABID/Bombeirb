@@ -11,6 +11,7 @@
 #include <game.h>
 #include <misc.h>
 #include <window.h>
+#include <menu.h>
 #include <sprite.h>
 #include <bomb.h>
 #include <str_formating.h>
@@ -125,6 +126,8 @@ static short input_keyboard(struct game* game) {
 	struct player* player = game_get_player(game);
 	struct map* map = game_get_current_map(game);
 
+	char *pause_options[] = {"Resume", "Quit"};
+
 
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
@@ -184,6 +187,15 @@ static short input_keyboard(struct game* game) {
 				break;
 			case SDLK_SPACE:
 				bomb_place(player, map);
+				break;
+			case SDLK_p:
+				switch(menu_display(pause_options, 2)){
+					case 0:
+						break;
+
+					default :
+						return 1;
+				}
 				break;
 			default:
 				break;
