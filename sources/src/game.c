@@ -239,3 +239,8 @@ struct game *game_load(){
 
 	return game;
 }
+
+char game_already_saved(){
+	FILE *f = fopen(SAVE_FILE,"rb");
+	return f!=NULL;
+}
