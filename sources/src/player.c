@@ -19,6 +19,7 @@ struct player {
 	int life;
 	int range;
 	int blink;
+	int keys;
 };
 
 struct player* player_init(int bombs) {
@@ -29,6 +30,7 @@ struct player* player_init(int bombs) {
 	player->direction = NORTH;
 	player->bombs = bombs;
 	player->life = 8;
+	player->keys = 0;
 	player->range = 3;
 	player->blink = 0;
 
@@ -131,6 +133,20 @@ void player_inc_life(struct player* player) {
 	player->life += 1;}
 }
 
+int player_get_keys(struct player* player) {
+	assert(player);
+	return player->keys;
+}
+
+void player_inc_keys(struct player* player) {
+	assert(player);
+	player->keys++;
+}
+
+void player_dec_keys(struct player* player) {
+	assert(player);
+	player->keys--;
+}
 
 void player_dec_range(struct player* player) {
 	assert(player);

@@ -24,6 +24,8 @@
 #define BANNER_LIFE		"sprite/banner_life.png"
 #define BANNER_BOMB		"sprite/bomb3.png"
 #define BANNER_RANGE		"sprite/banner_range.png"
+#define BANNER_FLAG		"sprite/flag.png"
+#define BANNER_KEY		"sprite/key.png"
 #define DIGIT_0			"sprite/banner_0.jpg"
 #define DIGIT_1			"sprite/banner_1.jpg"
 #define DIGIT_2			"sprite/banner_2.jpg"
@@ -66,6 +68,8 @@ SDL_Surface* numbers[10];
 SDL_Surface* banner_life;
 SDL_Surface* banner_bomb;
 SDL_Surface* banner_range;
+SDL_Surface* banner_flag;
+SDL_Surface* banner_key;
 SDL_Surface* banner_line;
 
 // map
@@ -107,6 +111,8 @@ static void banner_load() {
 	banner_life = image_load(BANNER_LIFE);
 	banner_bomb = image_load(BANNER_BOMB);
 	banner_range = image_load(BANNER_RANGE);
+	banner_flag = image_load(BANNER_FLAG);
+	banner_key = image_load(BANNER_KEY);
 	banner_line = image_load(BANNER_LINE);
 }
 
@@ -120,6 +126,8 @@ static void banner_unload() {
 	SDL_FreeSurface(banner_life);
 	SDL_FreeSurface(banner_bomb);
 	SDL_FreeSurface(banner_range);
+	SDL_FreeSurface(banner_flag);
+	SDL_FreeSurface(banner_key);
 	SDL_FreeSurface(banner_life);
 }
 
@@ -243,6 +251,16 @@ SDL_Surface* sprite_get_banner_line() {
 SDL_Surface* sprite_get_banner_range() {
 	assert(banner_range);
 	return banner_range;
+}
+
+SDL_Surface* sprite_get_banner_flag() {
+	assert(banner_flag);
+	return banner_flag;
+}
+
+SDL_Surface* sprite_get_banner_key() {
+	assert(banner_key);
+	return banner_key;
 }
 
 SDL_Surface* sprite_get_bonus(enum bonus_type bonus_type) {

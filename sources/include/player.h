@@ -32,6 +32,9 @@ int player_get_life(struct player* player);
 void player_inc_life(struct player * player);
 void player_dec_life(struct player * player);
 
+int player_get_keys(struct player* player);
+void player_dec_keys(struct player* player);
+void player_inc_keys(struct player* player);
 
 int player_get_range(struct player* player);
 
