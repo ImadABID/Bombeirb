@@ -21,9 +21,6 @@ int monster_get_x(struct monster *monster);
 void monster_set_y(struct monster *monster, int y);
 int monster_get_y(struct monster *monster);
 
-void monster_set_status(struct monster *monster, char status);
-char monster_get_status(struct monster *monster);
-
 void monster_set_direction(struct monster *monster, enum direction direction);
 enum direction monster_get_direction(struct monster *monster);
 
@@ -42,12 +39,16 @@ void monsters_display(struct monster *monster_list);
 struct monster *monster_list_new();
 void monster_list_free(struct monster * ml);
 
-void monster_list_append(struct monster *ml, struct monster *m);
 struct monster* monster_list_get(struct monster *ml);
 struct monster* monster_list_read(struct monster *ml);
 
+void monster_list_append(struct monster *ml, struct monster *m);
+void monster_list_delet(struct monster *ml, struct monster *m);
+
 char monster_list_empty(struct monster *monster_list);
 int monster_list_lenght(struct monster *ml);
+
 struct monster *monster_list_get_by_index(struct monster *monster_list, int i);
+struct monster *monster_list_get_by_position(struct monster *monster_list, int x, int y);
 
 #endif

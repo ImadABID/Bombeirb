@@ -376,6 +376,27 @@ char map_accept_monster(struct monster *monster, struct map *map){
     return yes;
 }
 
+//Monster life management
+void map_add_monster_at(struct map *map, int x, int y){
+	struct monster *monster = malloc(sizeof(monster));
+	monster_set_x(monster, x);
+	monster_set_y(monster, y);
+	monster_set_direction(monster, 0);
+	monster_list_append(map->monster_list, monster);
+	free(monster);
+
+	map_set_cell_type(map, x, y, CELL_MONSTER);
+}
+
+void map_kill_the_monster_at(struct map *map, int x, int y){
+	struct monster *monster = monster_list_get_by_position(map->monster_list, x, y);
+
+	monster_list_delet(map->monster_list, monster);
+
+	map_set_cell_type(map, x, y, CELL_EMPTY);
+}
+
+//Monster movement manager
 void map_update_monsters(struct map *map, struct monster *monster_list){
 	map_monsters_group_movement_manager(map, monster_list, map_move_monster_randomly, NULL);
 }

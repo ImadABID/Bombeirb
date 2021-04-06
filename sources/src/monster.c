@@ -125,6 +125,19 @@ void monster_list_append(struct monster *ml, struct monster *m){
     ml->next_monster = mn;
 }
 
+void monster_list_delet(struct monster *ml, struct monster *m){
+    while(ml->next_monster != m){
+        ml = ml->next_monster;
+        if(ml == NULL){
+            fprintf(stderr,"can't find the monster to delete");
+            exit(-1);
+        }
+    }
+
+    ml->next_monster = m->next_monster;
+    free(m);
+}
+
 struct monster* monster_list_get(struct monster *ml){
     struct monster* m = ml->next_monster;
     ml->next_monster = m->next_monster;
@@ -160,6 +173,18 @@ struct monster *monster_list_get_by_index(struct monster *monster_list, int i){
     }
 
     fprintf(stderr,"Index exceds monster list\n");
+    exit(-1);
+}
+
+struct monster *monster_list_get_by_position(struct monster *monster_list, int x, int y){
+    while(monster_list->next_monster!=NULL){
+        monster_list = monster_list->next_monster;
+        if(monster_get_x(monster_list) == x && monster_get_y(monster_list) == y){
+            return monster_list;
+        }
+    }
+
+    fprintf(stderr,"There is no monster at (%d, %d)\n", x, y);
     exit(-1);
 }
 
