@@ -96,6 +96,7 @@ void map_update_monsters(struct map *map, struct monster *monster_list);
 
 //Monster life management
 void map_add_monster_at(struct map *map, int x, int y);
+void map_kill_the_monster_at(struct map *map, int x, int y);
 
 //Monster movement manager
 void map_monsters_group_movement_manager(
