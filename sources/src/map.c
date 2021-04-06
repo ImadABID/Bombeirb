@@ -226,7 +226,11 @@ void map_display(struct map* map)
 				if(bonus == 0){
 					map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_EMPTY);
 				} else {
+					if(bonus == BONUS_MONSTER){
+						map_add_monster_at(map,x/SIZE_BLOC, y/SIZE_BLOC);
+					} else {
 					map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_BONUS + bonus);
+					}
 				}
 			}
 
