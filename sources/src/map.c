@@ -402,7 +402,8 @@ void map_kill_the_monster_at(struct map *map, int x, int y){
 
 //Monster movement manager
 void map_update_monsters(struct map *map, struct monster *monster_list){
-	map_monsters_group_movement_manager(map, monster_list, map_move_monster_randomly, NULL);
+	if(!monster_list_empty(monster_list))
+		map_monsters_group_movement_manager(map, monster_list, map_move_monster_randomly, NULL);
 }
 
 void map_monsters_group_movement_manager(
@@ -412,7 +413,7 @@ void map_monsters_group_movement_manager(
 	void *(monsters_planning_func)(struct map *map, struct monster *monster_list))
 {
 	int nbr_monsters = monster_list_lenght(monster_list);
-	const unsigned int TminToMove = (int) 20/ nbr_monsters;
+	const unsigned int TminToMove = (int) 24/ (nbr_monsters+1);
 	static unsigned int t = 0;
 
 	double monster_to_move_index;
@@ -431,7 +432,6 @@ void map_monsters_group_movement_manager(
 
 		//--------	Déplacement non simultané
 		monster_to_move_index = (int) (((double) rand()) / ((double) RAND_MAX) * ( (double) nbr_monsters-1) + 0.5 );
-		//struct monster *monster = monsters_get_by_index(Monsters, monster_to_move_index);
 		struct monster *monster = monster_list_get_by_index(monster_list, monster_to_move_index);
 		monster_move_func(map, monster);
 	}
