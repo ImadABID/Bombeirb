@@ -92,6 +92,9 @@ struct monster *map_generate_monsters_randomly(int n, struct map *map);
 char map_accept_monster(struct monster *monster, struct map *map);
 void map_update_monsters(struct map *map, struct monster *monster_list);
 
+//Monster life management
+void map_add_monster_at(struct map *map, int x, int y);
+
 //Monster movement manager
 void map_monsters_group_movement_manager(
 	struct map *map,
