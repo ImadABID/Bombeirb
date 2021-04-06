@@ -15,7 +15,8 @@ enum cell_type {
 	CELL_KEY=0x40,       	//  0100 0000
 	CELL_BONUS=0x50, 		// 	0101 0000
 	CELL_MONSTER=0x60, 		// 	0110 0000
-	CELL_BOMB=0x70 	   		// 	0111 0000
+	CELL_BOMB=0x70, 	   		// 	0111 0000
+	CELL_EXPLOSION=0x80
 
 };
 
@@ -44,7 +45,6 @@ enum door_type {
 enum compose_type {
 	CELL_TREE     = CELL_SCENERY | SCENERY_TREE,
 	CELL_STONE    = CELL_SCENERY | SCENERY_STONE,
-	CELL_EXPLOSION    = CELL_SCENERY | SCENERY_EXPLOSION,
 	CELL_PRINCESS = CELL_SCENERY | SCENERY_PRINCESS,
 
   CELL_BOX_RANGEINC = CELL_BOX | BONUS_BOMB_RANGE_DEC,
@@ -76,6 +76,8 @@ enum cell_type map_get_cell_type(struct map* map, int x, int y);
 
 // Set the type of a cell
 void  map_set_cell_type(struct map* map, int x, int y, enum cell_type type);
+void  map_set_cell(struct map* map, int x, int y, int cell);
+
 
 // Test if (x,y) is within the map
 int map_is_inside(struct map* map, int x, int y);

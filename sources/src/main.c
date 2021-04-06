@@ -66,7 +66,6 @@ int main(int argc, char *argv[]) {
 
 	// game loop
 	// static time rate implementation
-	bomb_init();
 
 	while (!done) {
 		timer = SDL_GetTicks();
