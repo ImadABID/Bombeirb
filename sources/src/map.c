@@ -21,8 +21,7 @@ struct map {
 	int width;
 	int height;
 	unsigned char* grid;
-	struct monster *Monsters;
-	int nbr_Monsters;
+	struct monster *monster_list;
 	double Monsters_movement_probability; //speed;
 };
 
@@ -57,14 +56,14 @@ void map_save(struct map* map, FILE *f){
 	fwrite(&map->width, sizeof(map->width), 1, f);
 	fwrite(&map->height, sizeof(map->height), 1, f);
 	fwrite(&map->Monsters_movement_probability, sizeof(map->Monsters_movement_probability), 1, f);
-	fwrite(&map->nbr_Monsters, sizeof(map->nbr_Monsters), 1, f);
 
 	fwrite(map->grid, sizeof(map->grid[0]), map->width*map->height, f);
 
-	struct monster *monster;
-	for(int i=0; i<map->nbr_Monsters ; i++){
-		monster = monsters_get_by_index(map->Monsters, i);
+	struct monster* monster;
+	while(!monster_list_empty(map->monster_list)){
+		monster = monster_list_get(map->monster_list);
 		monster_save(monster, f);
+		free(monster);
 	}
 }
 
@@ -74,18 +73,18 @@ struct map *map_load_progress(FILE *f){
 	fread(&map->width, sizeof(map->width), 1, f);
 	fread(&map->height, sizeof(map->height), 1, f);
 	fread(&map->Monsters_movement_probability, sizeof(map->Monsters_movement_probability), 1, f);
-	fread(&map->nbr_Monsters, sizeof(map->nbr_Monsters), 1, f);
 
 	map->grid = malloc(map->width*map->height*sizeof(unsigned char));
 	fread(map->grid, sizeof(unsigned char), map->width*map->height, f);
 
-	map->Monsters = malloc(map->nbr_Monsters*monster_get_struct_size());
-	struct monster *monster;
-	for(int i=0; i<map->nbr_Monsters ; i++){
-		monster = monsters_get_by_index(map->Monsters, i);
-		monster_load(monster, f);
-	}
+	map->monster_list = monster_list_new();
+	struct monster *monster=malloc(monster_get_struct_size());
 
+	while(monster_load(monster, f)){
+		monster_list_append(map->monster_list, monster);
+	}
+	monster_list_append(map->monster_list, monster);
+	free(monster);
 	return map;
 }
 
@@ -100,7 +99,7 @@ void map_free(struct map *map)
 	if (map == NULL )
 		return;
 	free(map->grid);
-	monsters_free(map->Monsters);
+	monster_list_free(map->monster_list);
 	free(map);
 }
 
@@ -237,8 +236,8 @@ void map_display(struct map* map)
 	  }
 	}
 
-	map_update_monsters(map, map->Monsters, map->nbr_Monsters);
-	monsters_display(map->Monsters, map->nbr_Monsters);
+	map_update_monsters(map, map->monster_list);
+	monsters_display(map->monster_list);
 }
 
 struct map *map_get_by_index(struct map **Maps, int i){
@@ -310,31 +309,32 @@ struct map* map_get(char *map_prefix, int level, int nbr_levels){
     fclose(f);
 
 	// Generating Monsters
-	map->nbr_Monsters = level+1;
-	map->Monsters = map_generate_monsters_randomly(map->nbr_Monsters, map);
+	//map->nbr_Monsters = level+1;
 	map->Monsters_movement_probability = ((double) (level+1)) / ((double) nbr_levels);
+	//map->Monsters = map_generate_monsters_randomly(map->nbr_Monsters, map);
+	map->monster_list = map_generate_monsters_randomly(level+1, map);
 
 	return map;
 }
 
 struct monster *map_generate_monsters_randomly(int n, struct map *map){
-	struct monster *Monsters = monsters_alloc(n);
+	struct monster *m_l = monster_list_new();
 
 	srand(time(0));
+	struct monster *monster = malloc(monster_get_struct_size());
     for(int i=0; i<n; i++){
-		struct monster *monster = monsters_get_by_index(Monsters, i);
-		monster_set_status(monster, 1);
-		monster_set_direction(monster, (int) ((double) rand()/RAND_MAX*3+0.5));
 		monster_set_x(monster, (int) ((double) rand()/RAND_MAX*(map_get_width(map)-1)+0.5));
 		monster_set_y(monster, (int) ((double) rand()/RAND_MAX*(map_get_height(map)-1)+0.5));
+		monster_set_direction(monster, (int) ((double) rand()/RAND_MAX*3+0.5));
         while(!map_accept_monster(monster, map)){
             monster_set_x(monster, (int) ((double) rand()/RAND_MAX*(map_get_width(map)-1)+0.5));
 			monster_set_y(monster, (int) ((double) rand()/RAND_MAX*(map_get_height(map)-1)+0.5));
         }
         map_set_cell_type(map, monster_get_x(monster), monster_get_y(monster), CELL_MONSTER);
+		monster_list_append(m_l, monster);
     }
-
-    return Monsters;
+	free(monster);
+    return m_l;
 }
 
 char map_accept_monster(struct monster *monster, struct map *map){
@@ -376,18 +376,18 @@ char map_accept_monster(struct monster *monster, struct map *map){
     return yes;
 }
 
-void map_update_monsters(struct map *map, struct monster *Monsters, int nbr_Monsters){
-	map_monsters_group_movement_manager(map, Monsters, nbr_Monsters, map_move_monster_randomly, NULL);
+void map_update_monsters(struct map *map, struct monster *monster_list){
+	map_monsters_group_movement_manager(map, monster_list, map_move_monster_randomly, NULL);
 }
 
 void map_monsters_group_movement_manager(
 	struct map *map,
-	struct monster *Monsters,
-	int nbr_Monsters,
+	struct monster *monster_list,
 	void monster_move_func(struct map *, struct monster *),
-	void *(monsters_planning_func)(struct map *map, struct monster *Monsters, int nbr_Monsters))
+	void *(monsters_planning_func)(struct map *map, struct monster *monster_list))
 {
-	const unsigned int TminToMove = (int) 20/nbr_Monsters;
+	int nbr_monsters = monster_list_lenght(monster_list);
+	const unsigned int TminToMove = (int) 20/ nbr_monsters;
 	static unsigned int t = 0;
 
 	double monster_to_move_index;
@@ -400,25 +400,15 @@ void map_monsters_group_movement_manager(
 
 	if(u<map->Monsters_movement_probability){
 		if(monsters_planning_func != NULL){
-			monsters_planning_func(map, Monsters, nbr_Monsters);
+			monsters_planning_func(map, monster_list);
 		}
 		t=0;
 
 		//--------	Déplacement non simultané
-		monster_to_move_index = (int) (((double) rand()) / ((double) RAND_MAX) * ( (double) map->nbr_Monsters-1) + 0.5 );
-		struct monster *monster = monsters_get_by_index(Monsters, monster_to_move_index);
-		if(monster_get_status(monster)){
-			monster_move_func(map, monster);
-		}
-		//---------
-
-		/* Déplacement simultané
-		struct monster *monster;
-		for(int i = 0; i<nbr_Monsters; i++){
-			monster = monsters_get_by_index(Monsters, i);
-			monster_move_func(map, monster);
-		}
-		*/
+		monster_to_move_index = (int) (((double) rand()) / ((double) RAND_MAX) * ( (double) nbr_monsters-1) + 0.5 );
+		//struct monster *monster = monsters_get_by_index(Monsters, monster_to_move_index);
+		struct monster *monster = monster_list_get_by_index(monster_list, monster_to_move_index);
+		monster_move_func(map, monster);
 	}
 }
 

@@ -8,23 +8,8 @@
 struct monster{
     int x,y;
     enum direction direction;
-    char alive;
+    struct monster *next_monster;
 };
-
-//Sauvegarde / Chargement partie
-void monster_save(struct monster *monster, FILE *f){
-    fwrite(&monster->x, sizeof(monster->x), 1, f);
-    fwrite(&monster->y, sizeof(monster->y), 1, f);
-    fwrite(&monster->direction, sizeof(monster->direction), 1, f);
-    fwrite(&monster->alive, sizeof(monster->alive), 1, f);
-}
-
-void monster_load(struct monster *monster, FILE *f){
-    fread(&monster->x, sizeof(monster->x), 1, f);
-    fread(&monster->y, sizeof(monster->y), 1, f);
-    fread(&monster->direction, sizeof(monster->direction), 1, f);
-    fread(&monster->alive, sizeof(monster->alive), 1, f);
-}
 
 // monster Getters&Seters
 
@@ -48,14 +33,6 @@ int monster_get_y(struct monster *monster){
     return monster->y;
 }
 
-void monster_set_status(struct monster *monster, char status){
-    monster->alive = status;
-}
-
-char monster_get_status(struct monster *monster){
-    return monster->alive;
-}
-
 void monster_set_direction(struct monster *monster, enum direction direction){
     monster->direction = direction;
 }
@@ -64,25 +41,12 @@ enum direction monster_get_direction(struct monster *monster){
     return monster->direction;
 }
 
-//Monsters
-
-struct monster *monsters_alloc(int n){
-    return malloc(n*sizeof(struct monster));
+struct monster* monster_get_next_monster(struct monster *monster){
+    return monster->next_monster;
 }
 
-void monsters_free(struct monster *Monsters){
-    free(Monsters);
-}
-
-struct monster* monsters_get_by_index(struct monster *Monsters, int i){
-    return Monsters+i;
-}
-
-void monsters_display(struct monster *Monsters, int nbr_Monsters){
-    for(int i=0; i<nbr_Monsters; i++){
-        if(Monsters[i].alive)
-            window_display_image(sprite_get_monster(Monsters[i].direction), Monsters[i].x * SIZE_BLOC, Monsters[i].y * SIZE_BLOC);
-    }
+void monster_set_next_monster(struct monster *monster,struct monster *monster_next){
+    monster->next_monster = monster_next;
 }
 
 void monster_step(struct monster *monster, enum direction direction){
@@ -109,4 +73,104 @@ void monster_step(struct monster *monster, enum direction direction){
 
     monster->x+=dx;
     monster->y+=dy;
+}
+
+//Sauvegarde / Chargement partie
+void monster_save(struct monster *monster, FILE *f){
+    fwrite(&monster->x, sizeof(monster->x), 1, f);
+    fwrite(&monster->y, sizeof(monster->y), 1, f);
+    fwrite(&monster->direction, sizeof(monster->direction), 1, f);
+
+    char is_it_the_last = 0;
+    if(monster->next_monster==NULL)
+        is_it_the_last = 1;
+    fwrite(&is_it_the_last, sizeof(char), 1, f);
+}
+
+char monster_load(struct monster *monster, FILE *f){
+    fread(&monster->x, sizeof(monster->x), 1, f);
+    fread(&monster->y, sizeof(monster->y), 1, f);
+    fread(&monster->direction, sizeof(monster->direction), 1, f);
+    
+    char is_it_the_last;
+    fread(&is_it_the_last, sizeof(char), 1, f);
+    
+    return 1-is_it_the_last;
+}
+
+//Monster list
+struct monster *monster_list_new(){
+    struct monster *m=malloc(sizeof(struct monster));
+    m->next_monster = NULL;
+    return m;
+}
+
+void monster_list_free(struct monster * ml){
+    if(ml->next_monster != NULL)
+        monster_list_free(ml->next_monster);
+
+    free(ml);
+}
+
+void monster_list_append(struct monster *ml, struct monster *m){
+    struct monster *mn = malloc(sizeof(struct monster));
+    mn->x=m->x;
+    mn->y=m->y;
+    mn->direction=m->direction;
+    mn->next_monster = NULL;
+
+    while(ml->next_monster!=NULL)
+        ml = ml->next_monster;
+
+    ml->next_monster = mn;
+}
+
+struct monster* monster_list_get(struct monster *ml){
+    struct monster* m = ml->next_monster;
+    ml->next_monster = m->next_monster;
+    return m;
+}
+
+struct monster* monster_list_read(struct monster *ml){
+    struct monster* m = ml->next_monster;
+    return m;
+}
+
+char monster_list_empty(struct monster *monster_list){
+    return monster_list->next_monster == NULL;
+}
+
+int monster_list_lenght(struct monster *ml){
+    int i=0;
+    while(ml->next_monster!=NULL){
+        ml = ml->next_monster;
+        i++;
+    }
+    return i;
+}
+
+struct monster *monster_list_get_by_index(struct monster *monster_list, int i){
+    int j=0;
+    while(monster_list->next_monster!=NULL){
+        monster_list = monster_list->next_monster;
+        if(i==j){
+            return monster_list;
+        }
+        j++;
+    }
+
+    fprintf(stderr,"Index exceds monster list\n");
+    exit(-1);
+}
+
+//Monsters
+
+void monsters_display(struct monster *monster_list){
+    struct monster *monster;
+    while(!monster_list_empty(monster_list)){
+        monster = monster_list_read(monster_list);
+        monster_list = monster_list->next_monster;
+        //printf("monsters_display : monster->direction = %d\n", monster->direction);
+        window_display_image(sprite_get_monster(monster->direction), monster->x * SIZE_BLOC, monster->y * SIZE_BLOC);
+    }
 }
