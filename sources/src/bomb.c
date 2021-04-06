@@ -3,6 +3,9 @@
 #include <window.h>
 #include <game.h>
 #include <constant.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 
 //La map ou chaque case represente
 //le bonus présent sur la case
@@ -45,13 +48,24 @@ void bomb_place(struct player* player, struct map* map){
 //Explosion d'une case
 int explose_cell(struct map* map, int x, int y, int face){
 	if(map_is_inside(map, x, y)){
+
+		if(map_get_cell_type(map,x, y) == CELL_MONSTER){
+			map_kill_the_monster_at(map, x, y);
+		}
+
+
 		if(map_get_cell_type(map,x, y) != CELL_EMPTY){
 			face = 0;
 		}
 
 		if(map_get_cell_type(map,x, y) == CELL_BOX){
 			//dropper caisse dans joueur
-			bonusMap[x][y] = map_get_cell(map,x,y)-CELL_BOX;
+
+
+			bonusMap[x][y] = rand()%6 + 1; //avec random
+			//bonusMap[x][y] = map_get_cell(map,x,y)-CELL_BOX; //sans random
+
+
 			map_set_cell(map,x, y, CELL_EXPLOSION + explosion_time);
 		}
 

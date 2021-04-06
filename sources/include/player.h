@@ -11,6 +11,7 @@
 #include <constant.h>
 
 struct player;
+struct game;
 
 // Creates a new player with a given number of available bombs
 struct player* player_init(int bomb_number);
@@ -39,6 +40,8 @@ void player_dec_range(struct player * player);
 
 // Set the direction of the next move of the player
 void player_set_current_way(struct player * player, enum direction direction);
+
+void player_hurt(struct game* game);
 
 // Set, Increase, Decrease the number of bomb that player can put
 int  player_get_nb_bomb(struct player * player);
