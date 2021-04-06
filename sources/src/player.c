@@ -9,6 +9,7 @@
 #include <player.h>
 #include <sprite.h>
 #include <window.h>
+#include <menu.h>
 #include <misc.h>
 #include <constant.h>
 
@@ -118,10 +119,10 @@ int player_get_life(struct player* player) {
 void player_dec_life(struct player* player) {
 	assert(player);
 	if(player->blink==0){
-		if(player->life>0){
+		if(player->life>1){
 			player->life -= 1;
 		} else {
-		//game over
+		menu_show_msg_with_default_opts("GAME OVER");
 		}
 		player->blink = 45;
 	}
