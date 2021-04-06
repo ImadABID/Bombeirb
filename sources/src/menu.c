@@ -11,19 +11,24 @@
 #include <constant.h>
 
 #define BACKGROUND "menu/background.png"
+#define FONT_MSG "menu/Sansation-Bold.ttf"
 #define FONT "menu/AlphaWood.ttf"
-#define FONT_SIZE_MSG 32
+#define FONT_SIZE_MSG 36
 #define FONT_SIZE 28
 
 SDL_Surface *background;
 TTF_Font *police;
+TTF_Font *police_msg;
 
 void menu_load(){
     background = image_load(BACKGROUND);
     police = TTF_OpenFont(FONT,FONT_SIZE);
+    police_msg = TTF_OpenFont(FONT_MSG, FONT_SIZE_MSG);
 }
 
 void menu_unload(){
+    TTF_CloseFont(police_msg);
+    TTF_CloseFont(police);
     SDL_FreeSurface(background);
     TTF_Quit();
 }
@@ -37,7 +42,7 @@ char menu_display(char *message, char **menu_option, unsigned char nbr_options){
     int width = 480; //to change
 
     int padding_vertical = (int) FONT_SIZE/2;
-    const int y_start_msg = (int) (0.4*height);
+    const int y_start_msg = (int) (0.5*height);
     const int y_start = (int) (0.6*height);
     int x_start;
 
@@ -51,7 +56,7 @@ char menu_display(char *message, char **menu_option, unsigned char nbr_options){
         //Message
         SDL_Surface *msg = NULL;
         if (message != NULL){
-            SDL_Surface *msg = TTF_RenderText_Blended(police, message, default_color);
+            SDL_Surface *msg = TTF_RenderText_Blended(police_msg, message, default_color);
             x_start = (int) (width - msg->w)/2;
             window_display_image(msg, x_start, y_start_msg);
         }
@@ -117,4 +122,9 @@ void menu_free_options_ttf(SDL_Surface **surf, unsigned char nbr_options){
     for(int i = 0; i<nbr_options ; i++){
         SDL_FreeSurface(surf[i]);
     }
+}
+
+char menu_show_msg_with_default_opts(char *msg){
+    char *options[] = {"New game", "Quit"};
+    return menu_display(msg, options, 2);
 }
