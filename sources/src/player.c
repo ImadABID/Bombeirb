@@ -314,3 +314,7 @@ void player_display(struct player* player) {
 			player->x * SIZE_BLOC, player->y * SIZE_BLOC);
 		}
 }
+
+void player_open_door(struct player *player, struct map *map){
+	if(player.)
+}
