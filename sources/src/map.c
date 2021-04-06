@@ -58,9 +58,9 @@ void map_save(struct map* map, FILE *f){
 	fwrite(&map->height, sizeof(map->height), 1, f);
 	fwrite(&map->Monsters_movement_probability, sizeof(map->Monsters_movement_probability), 1, f);
 	fwrite(&map->nbr_Monsters, sizeof(map->nbr_Monsters), 1, f);
-	
+
 	fwrite(map->grid, sizeof(map->grid[0]), map->width*map->height, f);
-	
+
 	struct monster *monster;
 	for(int i=0; i<map->nbr_Monsters ; i++){
 		monster = monsters_get_by_index(map->Monsters, i);
@@ -120,6 +120,10 @@ int map_get_cell(struct map* map, int x, int y){
 	return map->grid[CELL(x,y)];
 }
 
+void map_set_cell(struct map* map, int x, int y, int cell){
+	map->grid[CELL(x,y)] = cell;
+}
+
 enum cell_type map_get_cell_type(struct map* map, int x, int y)
 {
 	assert(map && map_is_inside(map, x, y));
@@ -163,19 +167,6 @@ void display_scenery(struct map* map, int x, int  y, unsigned char type)
 	case SCENERY_STONE:
 		window_display_image(sprite_get_stone(), x, y);
 		break;
-	case SCENERY_EXPLOSION:
-		//les explosions degage apres x tick
-		if(explosion_tick(x,y) == 0){
-			int bonus = box_bonus(x/SIZE_BLOC, y/SIZE_BLOC);
-			if(bonus == 0){
-				map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_EMPTY);
-			} else {
-				map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_BONUS + bonus);
-			}
-		}
-
-		window_display_image(sprite_get_explosion(), x, y);
-		break;
 	case SCENERY_TREE:
 		window_display_image(sprite_get_tree(), x, y);
 		break;
@@ -190,7 +181,7 @@ void display_door(struct map* map, int x, int y, unsigned char type){
 	case DOOR_CLOSED:
 		window_display_image(sprite_get_door_closed(), x, y);
 		break;
-	
+
 	default:
 		window_display_image(sprite_get_door_opened(), x, y);
 		break;
@@ -218,17 +209,30 @@ void map_display(struct map* map)
 	      window_display_image(sprite_get_box(), x, y);
 	      break;
 		case CELL_BOMB:
-			window_display_image(sprite_get_bomb(bomb_get_sprite(x,y)), x, y);
+			window_display_image(sprite_get_bomb(bomb_get_sprite(map,x,y)), x, y);
 			break;
-	    case CELL_BONUS:
-	      display_bonus(map, x, y, type);
-	      break;
-	    case CELL_KEY:
-	      window_display_image(sprite_get_key(), x, y);
-	      break;
-	    case CELL_DOOR:
-		  display_door(map, x, y, type);
-	      break;
+    case CELL_BONUS:
+      display_bonus(map, x, y, type);
+      break;
+    case CELL_KEY:
+      window_display_image(sprite_get_key(), x, y);
+      break;
+    case CELL_DOOR:
+	  display_door(map, x, y, type);
+      break;
+		case CELL_EXPLOSION:
+			//les explosions degage apres x tick
+			if(explosion_tick(x,y,map) == 0){
+				int bonus = box_bonus(x/SIZE_BLOC, y/SIZE_BLOC);
+				if(bonus == 0){
+					map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_EMPTY);
+				} else {
+					map_set_cell_type(map,x/SIZE_BLOC, y/SIZE_BLOC, CELL_BONUS + bonus);
+				}
+			}
+
+			window_display_image(sprite_get_explosion(), x, y);
+			break;
 	    }
 	  }
 	}
@@ -341,11 +345,11 @@ char map_accept_monster(struct monster *monster, struct map *map){
 		return 0;
 
     char yes = map_get_cell_type(map, x, y) == CELL_EMPTY;
-	
+
 	if(x-1>=0){
 		if(y-1>=0)
 			yes = yes && map_get_cell_type(map, x-1,y-1) != CELL_DOOR;
-		
+
 		yes = yes && map_get_cell_type(map, x-1,y) != CELL_DOOR;
 
 		if(y+1<map->height)

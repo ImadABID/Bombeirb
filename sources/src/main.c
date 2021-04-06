@@ -32,7 +32,6 @@ int main(int argc, char *argv[]) {
 
 	// game loop
 	// static time rate implementation
-	bomb_init();
 
 	int done = 0;
 	while (!done) {
