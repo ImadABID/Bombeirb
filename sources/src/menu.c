@@ -12,6 +12,7 @@
 
 #define BACKGROUND "menu/background.png"
 #define FONT "menu/AlphaWood.ttf"
+#define FONT_SIZE_MSG 32
 #define FONT_SIZE 28
 
 SDL_Surface *background;
@@ -27,7 +28,7 @@ void menu_unload(){
     TTF_Quit();
 }
 
-char menu_display(char **menu_option, unsigned char nbr_options){
+char menu_display(char *message, char **menu_option, unsigned char nbr_options){
     static unsigned char cur = 0;
     SDL_Color default_color = {255, 255, 255};
     SDL_Color selecte_color = {100, 100, 255};
@@ -36,8 +37,8 @@ char menu_display(char **menu_option, unsigned char nbr_options){
     int width = 480; //to change
 
     int padding_vertical = (int) FONT_SIZE/2;
-    //int y_start = (int) (height-(nbr_options*(padding_vertical+FONT_SIZE)-padding_vertical)) / 2;
-    int y_start = (int) (0.6*height); 
+    const int y_start_msg = (int) (0.4*height);
+    const int y_start = (int) (0.6*height);
     int x_start;
 
     while(1){
@@ -46,6 +47,14 @@ char menu_display(char **menu_option, unsigned char nbr_options){
         window_clear();
     
         window_display_image(background, 0, 0);
+
+        //Message
+        SDL_Surface *msg = NULL;
+        if (message != NULL){
+            SDL_Surface *msg = TTF_RenderText_Blended(police, message, default_color);
+            x_start = (int) (width - msg->w)/2;
+            window_display_image(msg, x_start, y_start_msg);
+        }
 
         SDL_Surface *text[nbr_options];
         for(int i=0; i<nbr_options; i++){
@@ -58,7 +67,11 @@ char menu_display(char **menu_option, unsigned char nbr_options){
 
             window_display_image(text[i], x_start, y_start + i * (padding_vertical+FONT_SIZE));
         }
+        
         window_refresh();
+
+        menu_free_options_ttf(text, nbr_options);
+        if(message != NULL) SDL_FreeSurface(msg);
 
         while(SDL_PollEvent(&event)){
             switch (event.type){
@@ -98,4 +111,10 @@ char menu_display(char **menu_option, unsigned char nbr_options){
 			SDL_Delay(ideal_time - exe_time); // we are ahead of ideal time. let's wait.
     }
     return 1;
+}
+
+void menu_free_options_ttf(SDL_Surface **surf, unsigned char nbr_options){
+    for(int i = 0; i<nbr_options ; i++){
+        SDL_FreeSurface(surf[i]);
+    }
 }

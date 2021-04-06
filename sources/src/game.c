@@ -189,7 +189,7 @@ static short input_keyboard(struct game* game) {
 				bomb_place(player, map);
 				break;
 			case SDLK_p:
-				switch(menu_display(pause_options, 2)){
+				switch(menu_display(NULL, pause_options, 2)){
 					case 0:
 						break;
 

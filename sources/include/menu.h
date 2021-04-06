@@ -4,6 +4,8 @@
 void menu_load();
 void menu_unload();
 
-char menu_display(char **menu_option, unsigned char nbr_options);
+char menu_display(char *message, char **menu_option, unsigned char nbr_options);
+
+void menu_free_options_ttf(SDL_Surface **surf, unsigned char nbr_options);
 
 #endif

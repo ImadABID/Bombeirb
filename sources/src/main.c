@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 	char game_was_played = 0;
 	if(game_already_saved()){
 		char *options[] = {"Continue your progress", "New game", "Quit"};
-		switch(menu_display(options, 3)){
+		switch(menu_display("Welcome again", options, 3)){
 			case 0:
 				game = game_load();
 				game_was_played = 1;
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 		}
 	}else{
 		char *options[] = {"New game", "Quit"};
-		switch(menu_display(options, 2)){
+		switch(menu_display("Welcome", options, 2)){
 			case 0:
 				game = game_new();
 				game_was_played = 1;
