@@ -89,25 +89,41 @@ void game_banner_display(struct game* game) {
 		window_display_image(sprite_get_banner_line(), i * SIZE_BLOC, y);
 
 	int white_bloc = ((map_get_width(map) * SIZE_BLOC) - 6 * SIZE_BLOC) / 4;
-	int x = white_bloc;
+
+
+
+	int x = 0;
 	y = (map_get_height(map) * SIZE_BLOC) + LINE_HEIGHT;
 	window_display_image(sprite_get_banner_life(), x, y);
 
-	x = white_bloc + SIZE_BLOC;
+	x += SIZE_BLOC;
 	window_display_image(sprite_get_number(player_get_life(game_get_player(game))), x, y);
 
-	x = 2 * white_bloc + 2 * SIZE_BLOC;
+	x += white_bloc;
 	window_display_image(sprite_get_banner_bomb(), x, y);
 
-	x = 2 * white_bloc + 3 * SIZE_BLOC;
+	x += SIZE_BLOC;
 	window_display_image(
 			sprite_get_number(player_get_nb_bomb(game_get_player(game))), x, y);
 
-	x = 3 * white_bloc + 4 * SIZE_BLOC;
+	x += white_bloc;
 	window_display_image(sprite_get_banner_range(), x, y);
 
-	x = 3 * white_bloc + 5 * SIZE_BLOC;
+	x += SIZE_BLOC;
 	window_display_image(sprite_get_number(player_get_range(game_get_player(game))), x, y);
+
+	x += white_bloc;
+	window_display_image(sprite_get_banner_flag(), x, y);
+
+	x += SIZE_BLOC;
+	window_display_image(sprite_get_number(game->level), x, y);
+
+	x += white_bloc;
+	window_display_image(sprite_get_banner_key(), x, y);
+
+	x += SIZE_BLOC;
+	window_display_image(sprite_get_number(player_get_keys(game_get_player(game))), x, y);
+
 }
 
 void game_display(struct game* game) {

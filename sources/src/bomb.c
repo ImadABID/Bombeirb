@@ -63,6 +63,9 @@ int explose_cell(struct map* map, int x, int y, int face){
 
 
 			bonusMap[x][y] = rand()%6 + 1; //avec random
+
+			printf("bonus %i\n", bonusMap[x][y]);
+
 			//bonusMap[x][y] = map_get_cell(map,x,y)-CELL_BOX; //sans random
 
 
