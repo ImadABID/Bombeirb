@@ -118,8 +118,30 @@ void game_display(struct game* game) {
 	map_display(game_get_current_map(game));
 	player_display(game->player);
 
+	player_hurt(game);
+
+
 	window_refresh();
 }
+
+
+
+void switch_level(struct game* game){
+	struct player* player = game_get_player(game);
+	struct map* map = game_get_current_map(game);
+
+	switch(player_move(player, map)){
+		case 10:
+			game->level++;
+			break;
+
+		case 9:
+			game->level--;
+			break;
+	}
+}
+
+
 
 static short input_keyboard(struct game* game) {
 	SDL_Event event;
@@ -139,51 +161,19 @@ static short input_keyboard(struct game* game) {
 				return 1;
 			case SDLK_UP:
 				player_set_current_way(player, NORTH);
-				switch(player_move(player, map)){
-					case 10:
-						game->level++;
-						break;
-
-					case 9:
-						game->level--;
-						break;
-				}
+				switch_level(game);
 				break;
 			case SDLK_DOWN:
 				player_set_current_way(player, SOUTH);
-				switch (player_move(player, map)){
-					case 10:
-						game->level++;
-						break;
-
-					case 9:
-						game->level--;
-						break;
-				}
+				switch_level(game);
 				break;
 			case SDLK_RIGHT:
 				player_set_current_way(player, EAST);
-				switch (player_move(player, map)){
-				case 10:
-					game->level++;
-					break;
-
-				case 9:
-					game->level--;
-					break;
-				}
+				switch_level(game);
 				break;
 			case SDLK_LEFT:
 				player_set_current_way(player, WEST);
-				switch (player_move(player, map)){
-				case 10:
-					game->level++;
-					break;
-
-				case 9:
-					game->level--;
-					break;
-				}
+				switch_level(game);
 				break;
 			case SDLK_SPACE:
 				bomb_place(player, map);

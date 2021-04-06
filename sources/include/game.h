@@ -30,7 +30,7 @@ struct map* game_get_current_map(struct game* game);
 
 // Display the game on the screen
 void game_display(struct game* game);
-
+void switch_level(struct game* game);
 // update
 int game_update(struct game* game);
 

@@ -5,6 +5,7 @@
 #include <SDL/SDL_image.h>
 #include <assert.h>
 
+#include <game.h>
 #include <player.h>
 #include <sprite.h>
 #include <window.h>
@@ -17,6 +18,7 @@ struct player {
 	int bombs;
 	int life;
 	int range;
+	int blink;
 };
 
 struct player* player_init(int bombs) {
@@ -28,6 +30,7 @@ struct player* player_init(int bombs) {
 	player->bombs = bombs;
 	player->life = 8;
 	player->range = 3;
+	player->blink = 0;
 
 	return player;
 }
@@ -53,6 +56,20 @@ struct player *player_load(FILE *f){
 
 	return player;
 }
+
+int i = 0;
+void player_hurt(struct game* game){
+	struct map* map = game_get_current_map(game);
+	struct player* player = game_get_player(game);
+	int cell = map_get_cell_type(map, player_get_x(player), player_get_y(player));
+
+	if(cell == CELL_MONSTER || cell == CELL_EXPLOSION){
+		player_dec_life(player);
+	}
+}
+
+
+
 
 void player_set_position(struct player *player, int x, int y) {
 	assert(player);
@@ -98,10 +115,13 @@ int player_get_life(struct player* player) {
 
 void player_dec_life(struct player* player) {
 	assert(player);
-	if(player->life>0){
-		player->life -= 1;
-	} else {
-	//game over
+	if(player->blink==0){
+		if(player->life>0){
+			player->life -= 1;
+		} else {
+		//game over
+		}
+		player->blink = 45;
 	}
 }
 
@@ -281,8 +301,16 @@ int player_move(struct player* player, struct map* map) {
 	return move;
 }
 
+int blink_tick = 40;
 void player_display(struct player* player) {
 	assert(player);
-	window_display_image(sprite_get_player(player->direction),
+
+
+	if(player->blink>0){player->blink--;}
+
+
+	if(player->blink%10 < 5){
+		window_display_image(sprite_get_player(player->direction),
 			player->x * SIZE_BLOC, player->y * SIZE_BLOC);
+		}
 }
