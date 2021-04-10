@@ -30,7 +30,7 @@ struct player* player_init(int bombs) {
 	player->direction = NORTH;
 	player->bombs = bombs;
 	player->life = 8;
-	player->keys = 0;
+	player->keys = 1; //
 	player->range = 3;
 	player->blink = 0;
 
@@ -63,7 +63,7 @@ int i = 0;
 void player_hurt(struct game* game){
 	struct map* map = game_get_current_map(game);
 	struct player* player = game_get_player(game);
-	int cell = map_get_cell_type(map, player_get_x(player), player_get_y(player));
+	char cell = map_get_cell_type(map, player_get_x(player), player_get_y(player));
 
 	if(cell == CELL_MONSTER || cell == CELL_EXPLOSION){
 		player_dec_life(player);
@@ -188,16 +188,13 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 		break;
 
 	case CELL_DOOR:
-		switch (map_get_cell(map, x, y)){
-			case CELL_DOOR + DOOR_OPENED_NEXT:
-				return 10;
-
-			case CELL_DOOR + DOOR_OPENED_PREV:
-				return 9;
-
-			default:
-				return 0; //return 0
-		}
+		if(map_is_door_closed(map, x, y))
+			return 0;
+		
+		if(map_is_next_level_door(map, x, y))
+			return 10;
+		
+		return 9;
 
 	case CELL_BOX:
 		//Est ce qu'on peut bouger la caisse ?
@@ -311,9 +308,8 @@ int player_move(struct player* player, struct map* map) {
 		break;
 	}
 
-	if (move) {
+	player_open_door(player, map);
 
-	}
 	return move;
 }
 
@@ -332,5 +328,24 @@ void player_display(struct player* player) {
 }
 
 void player_open_door(struct player *player, struct map *map){
-	if(player.)
+	if(player->keys <= 0)
+		return;
+
+	int x=player->x, y=player->y;
+
+	for(int dx = -1; dx <=1; dx++){
+		for(int dy = -1; dy <=1; dy++){
+			
+			if(dx==0 && dy==0)
+				continue;
+			
+			if(!map_is_inside(map, x+dx, y+dy))
+				continue;
+			
+			if(map_get_cell_type(map, x+dx, y+dy) == CELL_DOOR && map_is_door_closed(map, x+dx, y+dy)){
+				player->keys--;
+				map_open_door(map, x+dx, y+dy);
+			}
+		}
+	}
 }

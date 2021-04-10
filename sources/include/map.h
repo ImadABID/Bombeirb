@@ -37,9 +37,10 @@ enum scenery_type {
 };
 
 enum door_type {
-	DOOR_CLOSED			= 0,	// 0000
-	DOOR_OPENED_NEXT	= 1,	// 0001
-	DOOR_OPENED_PREV	= 2		// 0010
+	DOOR_PREV	= 4, // 0100
+	DOOR_NEXT	= 8, // 1000
+	DOOR_CLOSED	= 1, // 0001
+	DOOR_OPENED	= 2, // 0010
 };
 
 enum compose_type {
@@ -69,14 +70,13 @@ struct map *map_get_by_index(struct map **Maps, int i);
 int map_get_width(struct map* map);
 int map_get_height(struct map* map);
 
-int map_get_cell(struct map* map, int x, int y);
-
 // Return the type of a cell
 enum cell_type map_get_cell_type(struct map* map, int x, int y);
+unsigned char map_get_cell(struct map* map, int x, int y);
 
 // Set the type of a cell
 void  map_set_cell_type(struct map* map, int x, int y, enum cell_type type);
-void  map_set_cell(struct map* map, int x, int y, int cell);
+void  map_set_cell(struct map* map, int x, int y, unsigned char cell);
 
 
 // Test if (x,y) is within the map
@@ -88,6 +88,12 @@ struct map* map_get(char *map_prefix, int level, int nbr_levels);
 
 // Display the map on the screen
 void map_display(struct map* map);
+void display_door(struct map* map, int x, int y);
+
+//Door
+char map_is_door_closed(struct map *map, int x, int y);
+char map_is_next_level_door(struct map *map, int x, int y);
+void map_open_door(struct map *map, int x, int y);
 
 //For monsters
 struct monster *map_generate_monsters_randomly(int n, struct map *map);

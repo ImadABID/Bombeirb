@@ -58,4 +58,6 @@ int player_move(struct player* player, struct map* map);
 // Display the player on the screen
 void player_display(struct player* player);
 
+void player_open_door(struct player *player, struct map *map);
+
 #endif /* PLAYER_H_ */

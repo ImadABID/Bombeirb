@@ -115,11 +115,11 @@ int map_get_height(struct map* map)
 	return map->height;
 }
 
-int map_get_cell(struct map* map, int x, int y){
+unsigned char map_get_cell(struct map* map, int x, int y){
 	return map->grid[CELL(x,y)];
 }
 
-void map_set_cell(struct map* map, int x, int y, int cell){
+void map_set_cell(struct map* map, int x, int y, unsigned char cell){
 	map->grid[CELL(x,y)] = cell;
 }
 
@@ -175,15 +175,12 @@ void display_scenery(struct map* map, int x, int  y, unsigned char type)
 	}
 }
 
-void display_door(struct map* map, int x, int y, unsigned char type){
-	switch (type & 0x0f){
-	case DOOR_CLOSED:
-		window_display_image(sprite_get_door_closed(), x, y);
-		break;
-
-	default:
-		window_display_image(sprite_get_door_opened(), x, y);
-		break;
+void display_door(struct map* map, int x, int y){
+	if(map_is_door_closed(map, x, y)){
+		window_display_image(sprite_get_door_closed(), x*SIZE_BLOC, y*SIZE_BLOC);
+	}
+	else{
+		window_display_image(sprite_get_door_opened(), x*SIZE_BLOC, y*SIZE_BLOC);
 	}
 }
 
@@ -210,15 +207,15 @@ void map_display(struct map* map)
 		case CELL_BOMB:
 			window_display_image(sprite_get_bomb(bomb_get_sprite(map,x,y)), x, y);
 			break;
-    case CELL_BONUS:
-      display_bonus(map, x, y, type);
-      break;
-    case CELL_KEY:
-      window_display_image(sprite_get_key(), x, y);
-      break;
-    case CELL_DOOR:
-	  display_door(map, x, y, type);
-      break;
+    	case CELL_BONUS:
+    	  display_bonus(map, x, y, type);
+    	  break;
+    	case CELL_KEY:
+    	  window_display_image(sprite_get_key(), x, y);
+    	  break;
+    	case CELL_DOOR:
+		  display_door(map, i, j);
+    	  break;
 		case CELL_EXPLOSION:
 			//les explosions degage apres x tick
 			if(explosion_tick(x,y,map) == 0){
@@ -319,6 +316,35 @@ struct map* map_get(char *map_prefix, int level, int nbr_levels){
 	map->monster_list = map_generate_monsters_randomly(level+1, map);
 
 	return map;
+}
+
+//Door
+/*
+	Next level door closed		= 57
+	Pervious level door opened	= 54
+*/
+
+char map_is_door_closed(struct map *map, int x, int y){
+	unsigned char b_1111_0011 = 3;
+	return (map_get_cell(map, x, y) & b_1111_0011) == DOOR_CLOSED;
+}
+
+char map_is_next_level_door(struct map *map, int x, int y){
+	unsigned char b_1111_1100 = 12;
+	return (map_get_cell(map, x, y) & b_1111_1100) == DOOR_NEXT;
+}
+
+void map_open_door(struct map *map, int x, int y){
+	unsigned char b_1111_0000 = 240;
+	unsigned char b_1111_1100 = 252;
+
+	unsigned char door = map_get_cell(map, x, y);
+
+	if((door & b_1111_0000) != CELL_DOOR){
+		fprintf(stderr, "Error at map_open_door : The cell at (%d, %d) is not a door\n", x, y);
+		exit(-1);
+	}
+	map_set_cell(map, x, y,  ((door & b_1111_1100) | DOOR_OPENED));
 }
 
 struct monster *map_generate_monsters_randomly(int n, struct map *map){
