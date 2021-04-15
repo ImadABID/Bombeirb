@@ -70,6 +70,35 @@ int main(int argc, char *argv[]) {
 	while (!done) {
 		timer = SDL_GetTicks();
 
+		//Gestion de fin de partie
+		struct player *p = game_get_player(game);
+		if(player_get_life(p)<=0){
+			switch(menu_show_msg_with_default_opts("GAME OVER")){
+				case 0:
+					game_free(game);
+					game = game_new();
+					game_was_played = 1;
+					break;
+
+				default:
+					done = 1;
+			}
+		}
+		if(player_won(p)){
+			switch(menu_show_msg_with_default_opts("Congratulation !")){
+				case 0:
+					game_free(game);
+					game = game_new();
+					game_was_played = 1;
+					break;
+
+				default:
+					done = 1;
+			}
+		}
+
+		if(done) break;
+
 		done = game_update(game);
 		bomb_tick(game);
 		game_display(game);

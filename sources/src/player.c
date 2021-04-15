@@ -21,6 +21,7 @@ struct player {
 	int range;
 	int blink;
 	int keys;
+	char won;
 };
 
 struct player* player_init(int bombs) {
@@ -34,6 +35,7 @@ struct player* player_init(int bombs) {
 	player->keys = 1; //
 	player->range = 3;
 	player->blink = 0;
+	player->won = 0;
 
 	return player;
 }
@@ -119,11 +121,7 @@ int player_get_life(struct player* player) {
 void player_dec_life(struct player* player) {
 	assert(player);
 	if(player->blink==0){
-		if(player->life>1){
-			player->life -= 1;
-		} else {
-		menu_show_msg_with_default_opts("GAME OVER");
-		}
+		player->life --;
 		player->blink = 45;
 	}
 }
@@ -173,6 +171,10 @@ void player_dec_nb_bomb(struct player* player) {
 	player->bombs -= 1;}
 }
 
+char player_won(struct player *player){
+	return player->won;
+}
+
 static int player_move_aux(struct player* player, struct map* map, int x, int y) {
 	/*
 	return 1 	if the player is allowed to move
@@ -186,7 +188,7 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 	switch (map_get_cell_type(map, x, y)) {
 	case CELL_SCENERY:
 		if(map_get_cell(map, x, y) == CELL_PRINCESS){
-			menu_show_msg_with_default_opts("GAGNee!");
+			player->won = 1;
 		}
 		return 0;
 		break;

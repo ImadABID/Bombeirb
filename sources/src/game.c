@@ -12,6 +12,7 @@
 #include <misc.h>
 #include <window.h>
 #include <menu.h>
+#include <player.h>
 #include <sprite.h>
 #include <bomb.h>
 #include <str_formating.h>
@@ -130,6 +131,7 @@ void game_display(struct game* game) {
 	assert(game);
 
 	window_clear();
+
 	game_banner_display(game);
 	map_display(game_get_current_map(game));
 	player_display(game->player);
