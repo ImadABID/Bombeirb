@@ -32,7 +32,7 @@ struct player* player_init(int bombs) {
 	player->direction = NORTH;
 	player->bombs = bombs;
 	player->life = 8;
-	player->keys = 1; //
+	player->keys = 0;
 	player->range = 3;
 	player->blink = 0;
 	player->won = 0;
@@ -260,6 +260,11 @@ static int player_move_aux(struct player* player, struct map* map, int x, int y)
 				player_inc_life(player);
 				break;
 		}
+		map_set_cell_type(map,x,y,CELL_EMPTY);
+		break;
+
+	case CELL_KEY:
+		player->keys++;
 		map_set_cell_type(map,x,y,CELL_EMPTY);
 		break;
 
